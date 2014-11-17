@@ -43,7 +43,7 @@ def apriori(baskets, support):
     for itemset in baskets.itervalues():
         all_items.update(itemset)
 
-    C = [tuple([x]) for x in all_items]
+    C = [(x,) for x in all_items]
 
     outputs = []
     threshold = int(math.ceil(support * len(baskets)))
