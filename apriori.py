@@ -1,7 +1,24 @@
 #!/usr/bin/env python
 
+import itertools
 import math
 import collections
+
+def is_sorted(ls):
+    return all(l[i] <= l[i+1] for i in xrange(len(ls) - 1))
+
+def candidate_gen(frequent_itemsets):
+    """Compute new candidates of length K.    
+
+    Input is a list of frequent itemsets of length K-1"""
+
+    C = []
+
+    for c0, c1 in itertools.combinations(frequent_itemsets, 2):
+        assert is_sorted(c0)
+        assert is_sorted(c1)
+        
+    return []
 
 def apriori(baskets, support):
     """Compute frequent itemsets using the apriori algorithm.
@@ -19,7 +36,7 @@ def apriori(baskets, support):
     for itemset in baskets.itervalues():
         all_items.update(itemset)
 
-    C = [frozenset([x]) for x in all_items]
+    C = [tuple([x]) for x in all_items]
 
     outputs = []
     threshold = int(math.ceil(support * len(baskets)))
@@ -29,8 +46,10 @@ def apriori(baskets, support):
         counts = collections.Counter()
 
         for candidate in C:
+            c_set = frozenset(candidate)
             for itemset in baskets.itervalues():
-                if itemset.issuperset(candidate):
+                i_set = frozenset(itemset)
+                if i_set.issuperset(candidate):
                     counts[candidate] += 1
 
 
@@ -41,26 +60,21 @@ def apriori(baskets, support):
         outputs.append(F)
 
         # Create new candidates for the next iteration...
-        C = []
-        for fis in F:
-            for item in all_items:
-                if item > max(fis):
-                    C.append(fis.union([item]))
+        C = candidate_gen(F)
 
 if __name__ == '__main__':
     baskets = {
-        'A': {4, 5, 2},
-        'B': {7, 2, 3, 8},
-        'C': {3, 2, 1, 4, 7},
-        'D': {2, 4, 5, 7},
-        'E': {1, 2, 5},
-        'F': {2, 4, 6, 7},
-        'G': {1, 2, 3, 7, 5},
-        'H': {2, 5, 6, 7},
+        'A': [2, 5, 5],
+        'B': [2, 3, 7, 8],
+        'C': [1, 2, 3, 4, 7],
+        'D': [2, 4, 5, 7],
+        'E': [1, 2, 5],
+        'F': [2, 4, 6, 7],
+        'G': [1, 2, 3, 7, 5],
+        'H': [2, 5, 6, 7],
     }
 
     output = apriori(baskets, .2)
     for i, sets in enumerate(output):
         print '################ %d ##############' %  (i + 1)
         print sets
-
