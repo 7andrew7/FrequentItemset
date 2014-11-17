@@ -5,7 +5,7 @@ import math
 import collections
 
 def is_sorted(ls):
-    return all(l[i] <= l[i+1] for i in xrange(len(ls) - 1))
+    return all(ls[i] <= ls[i+1] for i in xrange(len(ls) - 1))
 
 def candidate_gen(frequent_itemsets):
     """Compute new candidates of length K.    
@@ -18,7 +18,14 @@ def candidate_gen(frequent_itemsets):
         assert is_sorted(c0)
         assert is_sorted(c1)
         
-    return []
+        if c0[:-1] == c1[:-1]:
+            _max = max(c0[-1], c1[-1])
+            _min = min(c0[-1], c1[-1])
+            C.append(c0[:-1] + (_min, _max))
+
+    # TODO: prune candidates without support
+
+    return C
 
 def apriori(baskets, support):
     """Compute frequent itemsets using the apriori algorithm.
