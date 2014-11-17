@@ -24,10 +24,7 @@ def apriori(baskets, support):
     outputs = []
     threshold = int(math.ceil(support * len(baskets)))
 
-
     while True:
-        print C
-
         # Compute frequent itemsets from among the candidate sets
         counts = collections.Counter()
 
@@ -37,15 +34,18 @@ def apriori(baskets, support):
                     counts[candidate] += 1
 
 
-        print counts
-
         F = [candidate for (candidate, count) in counts.iteritems() if count >= threshold]
+
+        if len(F) == 0:
+            return outputs
         outputs.append(F)
-        return outputs
 
-        # Construct new candidate list
-
-    return outputs
+        # Create new candidates for the next iteration...
+        C = []
+        for fis in F:
+            for item in all_items:
+                if item > max(fis):
+                    C.append(fis.union([item]))
 
 if __name__ == '__main__':
     baskets = {
@@ -55,8 +55,12 @@ if __name__ == '__main__':
         'D': {2, 4, 5, 7},
         'E': {1, 2, 5},
         'F': {2, 4, 6, 7},
-        'G': {1, 2, 3, 4, 5},
+        'G': {1, 2, 3, 7, 5},
         'H': {2, 5, 6, 7},
     }
 
-    print apriori(baskets, .25)
+    output = apriori(baskets, .2)
+    for i, sets in enumerate(output):
+        print '################ %d ##############' %  (i + 1)
+        print sets
+
