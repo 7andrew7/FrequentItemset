@@ -14,6 +14,7 @@ def candidate_gen(frequent_itemsets):
 
     C = []
 
+    # Join pairs of itemsets to construct candidates
     for c0, c1 in itertools.combinations(frequent_itemsets, 2):
         assert is_sorted(c0)
         assert is_sorted(c1)
@@ -23,9 +24,16 @@ def candidate_gen(frequent_itemsets):
             _min = min(c0[-1], c1[-1])
             C.append(c0[:-1] + (_min, _max))
 
-    # TODO: prune candidates without support
+    # Prune candidates with an unsupported subset
+    C2 = []
+    for c in C:
+        for subset in itertools.combinations(c, len(c) - 1):
+            if tuple(subset) not in frequent_itemsets:
+                break
+        else:
+            C2.append(c)
 
-    return C
+    return C2
 
 def apriori(baskets, support):
     """Compute frequent itemsets using the apriori algorithm.
@@ -60,7 +68,8 @@ def apriori(baskets, support):
                     counts[candidate] += 1
 
 
-        F = [candidate for (candidate, count) in counts.iteritems() if count >= threshold]
+        F = [candidate for (candidate, count) in counts.iteritems()
+             if count >= threshold]
 
         if len(F) == 0:
             return outputs
