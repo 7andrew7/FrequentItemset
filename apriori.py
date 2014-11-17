@@ -10,7 +10,9 @@ def is_sorted(ls):
 def candidate_gen(frequent_itemsets):
     """Compute new candidates of length K.    
 
-    Input is a list of frequent itemsets of length K-1"""
+    Input is a list of item set tuples of length K-1.
+    Output is a list of item set tuples of length K.
+    """
 
     C = []
 
@@ -34,6 +36,24 @@ def candidate_gen(frequent_itemsets):
             C2.append(c)
 
     return C2
+
+def contains(t1, t2):
+    """Return True if the elements of t1 are contained in t2.
+
+    Assumes sorted tuples.
+    """
+    p2 = 0
+    for v1 in t1:
+        for i in range(p2, len(t2)):
+            if t2[i] == v1:
+                p2 = i + 1
+                break
+            if t2[i] > v1:
+                return False
+        else:
+            return False # advanced through the list
+
+    return True
 
 def apriori(baskets, support):
     """Compute frequent itemsets using the apriori algorithm.
@@ -60,13 +80,10 @@ def apriori(baskets, support):
         # Compute frequent itemsets from among the candidate sets
         counts = collections.Counter()
 
-        for candidate in C:
-            c_set = frozenset(candidate)
-            for itemset in baskets.itervalues():
-                i_set = frozenset(itemset)
-                if i_set.issuperset(candidate):
+        for itemset in baskets.itervalues():
+           for candidate in C:
+                if contains(candidate, itemset):
                     counts[candidate] += 1
-
 
         F = [candidate for (candidate, count) in counts.iteritems()
              if count >= threshold]
