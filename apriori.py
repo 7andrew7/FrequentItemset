@@ -14,10 +14,12 @@ def apriori(baskets, support):
     """
     outputs = []
 
-    iters = [iter(x) for x in baskets.itervalues()]
-    si = itertools.chain(*iters)
-    C = frozenset(si)
+    # Compute initial candidates: all items as singleton sets
+    all_items = set()
+    for itemset in baskets.itervalues():
+        all_items.update(itemset)
 
+    C = [frozenset([x]) for x in all_items]
     print C
 
 if __name__ == '__main__':
