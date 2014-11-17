@@ -58,8 +58,7 @@ def contains(t1, t2):
 def apriori(baskets, support):
     """Compute frequent itemsets using the apriori algorithm.
 
-    :param baskets: A dictionary mapping from a basket ID to an item set.
-    Basket IDs and item IDs must be immutable and hashable.
+    :param baskets: A list of item set tuples.
     :param support: Support level, expressed as as a percentage of baskets.
 
     :return: A list of frequent item sets.  Element k contains a list of sets
@@ -68,7 +67,7 @@ def apriori(baskets, support):
 
     # Compute initial candidates: all items as singleton sets
     all_items = set()
-    for itemset in baskets.itervalues():
+    for itemset in baskets:
         all_items.update(itemset)
 
     C = [(x,) for x in all_items]
@@ -80,7 +79,7 @@ def apriori(baskets, support):
         # Compute frequent itemsets from among the candidate sets
         counts = collections.Counter()
 
-        for itemset in baskets.itervalues():
+        for itemset in baskets:
            for candidate in C:
                 if contains(candidate, itemset):
                     counts[candidate] += 1
@@ -96,16 +95,16 @@ def apriori(baskets, support):
         C = candidate_gen(F)
 
 if __name__ == '__main__':
-    baskets = {
-        'A': [2, 5, 5],
-        'B': [2, 3, 7, 8],
-        'C': [1, 2, 3, 4, 7],
-        'D': [2, 4, 5, 7],
-        'E': [1, 2, 5],
-        'F': [2, 4, 6, 7],
-        'G': [1, 2, 3, 7, 5],
-        'H': [2, 5, 6, 7],
-    }
+    baskets = [
+        (2, 5, 5),
+        (2, 3, 7, 8),
+        (1, 2, 3, 4, 7),
+        (2, 4, 5, 7),
+        (1, 2, 5),
+        (2, 4, 6, 7),
+        (1, 2, 3, 7, 5),
+        (2, 5, 6, 7)
+    ]
 
     output = apriori(baskets, .2)
     for i, sets in enumerate(output):
