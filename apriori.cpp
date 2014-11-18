@@ -178,21 +178,3 @@ basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support)
 
     return output;
 }
-
-int main () 
-{
-    basket_vector_t input = {
-        {2, 5, 6},
-        {2, 3, 7, 8},
-        {1, 2, 3, 4, 7},
-        {2, 4, 7, 9},
-        {1, 2, 5, 9},
-        {2, 4, 6, 7},
-        {1, 2, 3, 5, 7},
-        {2, 5, 6, 7}
-    };
-
-    auto result = apriori(input, 2);
-
-    std::cout << result << std::endl;
-}
