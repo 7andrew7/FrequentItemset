@@ -15,7 +15,7 @@ std::ostream& operator<<(std::ostream &out, const std::vector<T> &vec)
     out << "(";
 
     if (begin != end) {
-        std::cout << *begin;
+        out << *begin;
 
         for (auto it = begin + 1; it != end; ++it) {
             out << ", " << *it;
@@ -77,8 +77,6 @@ static basket_vector_t candidate_gen(
             basket_t b1{*i1};
             basket_t b2{*i2};
 
-            std::cout << b1 << " ; " << b2 << std::endl;
-
             auto b1_begin = b1.cbegin();
             auto b1_pre_end = b1.cend() - 1;
             auto b2_begin = b2.cbegin();
@@ -137,8 +135,6 @@ basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support)
     // Step #1: Compute frequent singletons
     basket_vector_t output{};
     count_singletons(baskets, support, &output);
-
-    std::cout << "Singletons: " << output << std::endl;
 
     ///////////////////////////////////////////////////////////////
     // Step 2: iteratively produce item sets of increasing length
