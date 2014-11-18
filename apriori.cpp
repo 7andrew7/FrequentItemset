@@ -1,18 +1,31 @@
 #include "apriori.h"
 
+#include <cassert>
 #include <iostream>
 
 basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support) {
-    basket_vector_t output{baskets};
-    return output;
+    assert(support <= baskets.size());
+
+    basket_vector_t output{};
+
+    return baskets;
 }
 
 template<class T>
 std::ostream& operator<<(std::ostream &out, const std::vector<T> &vec) {
+    auto begin = vec.cbegin();
+    auto end = vec.cend();
+
     out << "(";
-    for (const T &x : vec) {
-        out << x << ",";
+
+    if (begin != end) {
+        std::cout << *begin;
+
+        for (auto it = begin + 1; it != end; ++it) {
+            out << ", " << *it;
+        }
     }
+
     out << ")";
     return out;
 }
