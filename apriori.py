@@ -109,7 +109,7 @@ if __name__ == '__main__':
         (2, 5, 6, 7)
     ]
 
-    output = apriori(baskets, .2)
+    output = apriori(baskets, .25)
     for i, sets in enumerate(output):
         print '################ %d ##############' %  (i + 1)
         print sets
