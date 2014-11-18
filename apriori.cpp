@@ -1,9 +1,42 @@
 #include "apriori.h"
 
+#include <algorithm>
 #include <cassert>
 #include <iostream>
 #include <unordered_map>
 
+
+template<class T>
+std::ostream& operator<<(std::ostream &out, const std::vector<T> &vec)
+{
+    auto begin = vec.cbegin();
+    auto end = vec.cend();
+
+    out << "(";
+
+    if (begin != end) {
+        std::cout << *begin;
+
+        for (auto it = begin + 1; it != end; ++it) {
+            out << ", " << *it;
+        }
+    }
+
+    out << ")";
+    return out;
+}
+
+struct BasketHash {
+    std::size_t operator() (const basket_t &basket) const
+    {
+        std::size_t output{};
+        for (item_t item : basket) {
+            output ^= item;
+        }
+
+        return output;
+    }
+};
 
 static inline void count_singletons(
     const basket_vector_t &baskets,
@@ -25,14 +58,46 @@ static inline void count_singletons(
     }
 }
 
-using basket_iter_t = basket_vector_t::const_iterator;
+using basket_set_iterator = basket_vector_t::const_iterator;
 
-static inline basket_vector_t candidate_gen(
-    basket_iter_t prev_begin,
-    basket_iter_t prev_end)
+/**
+ * Compute candidates item sets, given item sets from a previous invocation.
+ */
+static basket_vector_t candidate_gen(
+    const basket_set_iterator prev_begin,
+    const basket_set_iterator prev_end)
 {
-    basket_vector_t candidates{};
-    return candidates;
+    basket_vector_t output{};
+    basket_set_iterator i1{prev_begin};
+
+    for (; i1 != prev_end; ++i1) { // for each itemset
+        basket_set_iterator i2{i1 + 1};
+        for (; i2 != prev_end; ++i2) {
+
+            basket_t b1{*i1};
+            basket_t b2{*i2};
+
+            std::cout << b1 << " ; " << b2 << std::endl;
+
+            auto b1_begin = b1.cbegin();
+            auto b1_pre_end = b1.cend() - 1;
+            auto b2_begin = b2.cbegin();
+            auto b2_pre_end = b2.cend() - 1;
+
+            if (std::equal(b1_begin, b1_pre_end, b2_begin)) {
+                basket_t basket{b1_begin, b1_pre_end};
+                item_t _min = std::min(*b1_pre_end, *b2_pre_end);
+                item_t _max = std::max(*b1_pre_end, *b2_pre_end);
+                basket.push_back(_min);
+                basket.push_back(_max);
+
+                std::cout << "CB: " << basket << std::endl;
+                output.push_back(basket);
+            }
+        }
+    }
+
+    return output;
 }
 
 /**
@@ -63,18 +128,6 @@ static inline bool contains(
     return true;
 }
 
-struct BasketHash {
-    std::size_t operator() (const basket_t &basket) const
-    {
-        std::size_t output{};
-        for (item_t item : basket) {
-            output ^= item;
-        }
-
-        return output;
-    }
-};
-
 basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support)
 {
     assert(support <= baskets.size());
@@ -82,6 +135,8 @@ basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support)
     // Step #1: Compute frequent singletons
     basket_vector_t output{};
     count_singletons(baskets, support, &output);
+
+    std::cout << "Singletons: " << output << std::endl;
 
     auto prev_begin = output.cbegin();
     auto prev_end = output.cend();
@@ -111,26 +166,6 @@ basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support)
     }
 
     return output;
-}
-
-template<class T>
-std::ostream& operator<<(std::ostream &out, const std::vector<T> &vec) 
-{
-    auto begin = vec.cbegin();
-    auto end = vec.cend();
-
-    out << "(";
-
-    if (begin != end) {
-        std::cout << *begin;
-
-        for (auto it = begin + 1; it != end; ++it) {
-            out << ", " << *it;
-        }
-    }
-
-    out << ")";
-    return out;
 }
 
 int main () 
