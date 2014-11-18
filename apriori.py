@@ -96,7 +96,7 @@ def apriori(baskets, support):
 
 if __name__ == '__main__':
     baskets = [
-        (2, 5, 5),
+        (2, 5, 6),
         (2, 3, 7, 8),
         (1, 2, 3, 4, 7),
         (2, 4, 5, 7),
