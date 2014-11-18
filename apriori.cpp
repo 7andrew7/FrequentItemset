@@ -108,20 +108,21 @@ static inline bool contains(
     const basket_t &needle,
     const basket_t &haystack)
 {
-    auto h_pos = haystack.cbegin();
+    auto h_pos = haystack.cbegin() - 1;
 
     for (item_t item : needle) {
+        // invariant: h_pos points before the first candidate match
+        ++h_pos;
         for (; h_pos != haystack.cend(); ++h_pos) {
             if (*h_pos > item)
                 return false;
             if (*h_pos == item) {
-                ++h_pos;
                 break;
             }
         }
 
         if (h_pos == haystack.cend())
-            return false;        
+            return false;
     } // advance to next needle entry
 
     return true;
@@ -143,10 +144,13 @@ basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support)
     // iteration of apriori.
     std::size_t prev_first = 0;
 
-    while(true) {
+    for (auto k = 2; ; ++k) {
         auto i_begin = output.cbegin() + prev_first;
         auto i_end = output.cend();
         basket_vector_t candidates{candidate_gen(i_begin, i_end)};
+
+        // std::cout << "-------------- " << k << " -----------" << std::endl;
+        // std::cout << "C " << candidates << std::endl;
 
         // The next iteration starts where the previous left off
         prev_first = output.size();
@@ -167,6 +171,9 @@ basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support)
 
         if (prev_first == output.size())
             return output; // nothing added this iteration
+
+        // basket_vector_t newly_added{output.cbegin() + prev_first, output.cend()};
+        // std::cout << "A " << newly_added << std::endl;
     }
 
     return output;
