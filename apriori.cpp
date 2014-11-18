@@ -40,7 +40,9 @@ static inline basket_vector_t candidate_gen(
  *
  * Assumes baskets are sorted vectors.
  */
-static inline bool contains(const basket_t &needle, const basket_t &haystack)
+static inline bool contains(
+    const basket_t &needle,
+    const basket_t &haystack)
 {
     auto h_pos = haystack.cbegin();
 
