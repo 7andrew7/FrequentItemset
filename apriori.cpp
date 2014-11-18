@@ -2,10 +2,20 @@
 
 #include <cassert>
 #include <iostream>
+#include <unordered_map>
 
 basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support) {
     assert(support <= baskets.size());
 
+    // Compute frequent singletons
+    std::unordered_map<item_t, std::size_t> counts{}
+    for (const basket_t &basket : baskets) {
+        for (const item_t item : basket) {
+            counts[item_t]++;
+        }
+    }
+
+    
     basket_vector_t output{};
 
     return baskets;

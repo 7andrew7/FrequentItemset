@@ -65,42 +65,45 @@ def apriori(baskets, support):
     of length k+1.
     """
 
-    # Compute initial candidates: all items as singleton sets
-    all_items = set()
-    for itemset in baskets:
-        all_items.update(itemset)
-
-    C = [(x,) for x in all_items]
-
     outputs = []
     threshold = int(math.ceil(support * len(baskets)))
 
+    # Compute popular singletons
+    counts = collections.Counter()
+
+    for itemset in baskets:
+        for item in itemset:
+            counts[item] += 1
+
+    L1 = [(item,) for (item, count) in counts.iteritems() if count >= threshold]
+    outputs.append(L1)
+
     while True:
+        # Create new candidates for the next iteration...
+        candidates = candidate_gen(outputs[-1])
+
         # Compute frequent itemsets from among the candidate sets
         counts = collections.Counter()
 
         for itemset in baskets:
-           for candidate in C:
+           for candidate in candidates:
                 if contains(candidate, itemset):
                     counts[candidate] += 1
 
-        F = [candidate for (candidate, count) in counts.iteritems()
-             if count >= threshold]
+        Lk = [candidate for (candidate, count) in counts.iteritems()
+              if count >= threshold]
 
-        if len(F) == 0:
+        if len(Lk) == 0:
             return outputs
-        outputs.append(F)
-
-        # Create new candidates for the next iteration...
-        C = candidate_gen(F)
+        outputs.append(Lk)
 
 if __name__ == '__main__':
     baskets = [
         (2, 5, 6),
         (2, 3, 7, 8),
         (1, 2, 3, 4, 7),
-        (2, 4, 5, 7),
-        (1, 2, 5),
+        (2, 4, 7, 9),
+        (1, 2, 5, 9),
         (2, 4, 6, 7),
         (1, 2, 3, 7, 5),
         (2, 5, 6, 7)
