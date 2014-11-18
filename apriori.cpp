@@ -4,10 +4,11 @@
 #include <iostream>
 #include <unordered_map>
 
-basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support) {
-    assert(support <= baskets.size());
 
-    // Step #1: Compute frequent singletons
+static inline void count_singletons(
+    const basket_vector_t &baskets,
+    std::size_t support,
+    basket_vector_t *output) {
 
     std::unordered_map<item_t, std::size_t> counts{};
     for (const basket_t &basket : baskets) {
@@ -16,20 +17,70 @@ basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support) {
         }
     }
 
-    basket_vector_t output{};
     for (auto it = counts.cbegin(); it != counts.cend(); ++it) {
         if (it->second >= support) {
-            output.push_back(basket_t{it->first});
+            output->push_back(basket_t{it->first});
         }
     }
+}
 
-    // auto prev_begin = output.cbegin();
-    // auto prev_end = output.cend();
+using basket_iter_t = basket_vector_t::const_iterator;
 
-    // while(true) {
-    //     auto candidates = candidate_gen(prev_begin, prev_end);
-    // }
-    
+static inline basket_vector_t candidate_gen(
+    basket_iter_t prev_begin, basket_iter_t prev_end) {
+    basket_vector_t candidates{};
+    return candidates;
+}
+
+static inline bool contains(const basket_t &needle, const basket_t &haystack) {
+    return false;
+}
+
+struct BasketHash {
+    std::size_t operator() (const basket_t &basket) const {
+        std::size_t output{};
+        for (item_t item : basket) {
+            output ^= item;
+        }
+
+        return output;
+    }
+};
+
+basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support) {
+    assert(support <= baskets.size());
+
+    // Step #1: Compute frequent singletons
+    basket_vector_t output{};
+    count_singletons(baskets, support, &output);
+
+    auto prev_begin = output.cbegin();
+    auto prev_end = output.cend();
+
+    while(true) {
+        basket_vector_t candidates{candidate_gen(prev_begin, prev_end)};
+        prev_begin = prev_end;
+
+        std::unordered_map<basket_t, std::size_t, BasketHash> counts{};
+
+        for (const basket_t &basket : baskets) {
+            for (const basket_t &candidate : candidates) {
+                if (contains(candidate, basket)) {
+                    counts[candidate]++;
+                }
+            }
+        }
+
+        for (auto it = counts.cbegin(); it != counts.cend(); ++it) {
+            if (it->second >= support)
+                output.push_back(it->first);
+        }
+
+        prev_end = output.cend();
+        if (prev_begin == prev_end)
+            return output;
+    }
+
     return output;
 }
 
