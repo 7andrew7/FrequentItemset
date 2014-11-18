@@ -7,6 +7,16 @@ basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support) {
     return output;
 }
 
+template<class T>
+std::ostream& operator<<(std::ostream &out, const std::vector<T> &vec) {
+    out << "(";
+    for (const T &x : vec) {
+        out << x << ",";
+    }
+    out << ")";
+    return out;
+}
+
 int main () {
     basket_vector_t input = {
         {2, 5, 5},
@@ -21,10 +31,5 @@ int main () {
 
     auto result = apriori(input, 2);
 
-    for (const auto &basket : result) {
-        for (auto item : basket) {
-            std::cout << item << " ";
-        }
-        std::cout << std::endl;
-    }
+    std::cout << result << std::endl;
 }
