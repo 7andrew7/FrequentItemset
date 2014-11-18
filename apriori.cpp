@@ -33,7 +33,23 @@ static inline basket_vector_t candidate_gen(
 }
 
 static inline bool contains(const basket_t &needle, const basket_t &haystack) {
-    return false;
+    auto h_pos = haystack.cbegin();
+
+    for (item_t item : needle) {
+        for (; h_pos != haystack.cend(); ++h_pos) {
+            if (*h_pos > item)
+                return false;
+            if (*h_pos == item) {
+                ++h_pos;
+                break;
+            }
+        }
+
+        if (h_pos == haystack.cend())
+            return false;        
+    } // advance to next needle entry
+
+    return true;
 }
 
 struct BasketHash {
