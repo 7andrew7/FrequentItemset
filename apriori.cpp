@@ -35,6 +35,11 @@ static inline basket_vector_t candidate_gen(
     return candidates;
 }
 
+/**
+ * Determine whether the haystack basket contains all entries from the needle.
+ *
+ * Assumes baskets are sorted vectors.
+ */
 static inline bool contains(const basket_t &needle, const basket_t &haystack)
 {
     auto h_pos = haystack.cbegin();
@@ -57,7 +62,8 @@ static inline bool contains(const basket_t &needle, const basket_t &haystack)
 }
 
 struct BasketHash {
-    std::size_t operator() (const basket_t &basket) const {
+    std::size_t operator() (const basket_t &basket) const
+    {
         std::size_t output{};
         for (item_t item : basket) {
             output ^= item;
