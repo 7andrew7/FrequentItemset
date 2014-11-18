@@ -26,18 +26,6 @@ std::ostream& operator<<(std::ostream &out, const std::vector<T> &vec)
     return out;
 }
 
-struct BasketHash {
-    std::size_t operator() (const basket_t &basket) const
-    {
-        std::size_t output{};
-        for (item_t item : basket) {
-            output ^= item;
-        }
-
-        return output;
-    }
-};
-
 static inline void count_singletons(
     const basket_vector_t &baskets,
     std::size_t support,
@@ -154,7 +142,7 @@ basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support)
 
         // The next iteration starts where the previous left off
         prev_first = output.size();
-        std::unordered_map<basket_t, std::size_t, BasketHash> counts{};
+        std::unordered_map<basket_t, std::size_t> counts{};
 
         for (const basket_t &basket : baskets) {
             for (const basket_t &candidate : candidates) {

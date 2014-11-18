@@ -1,5 +1,7 @@
 #include "apriori.h"
 
+#include <unordered_set>
+
 #include "gtest/gtest.h"
 
 TEST(sample_test_case, sample_test)
@@ -8,7 +10,8 @@ TEST(sample_test_case, sample_test)
 }
 
 TEST(Apriori, BasicTest) {
-    basket_vector_t input = {
+
+    std::unordered_set<basket_t> input {
         {2, 5, 6},
         {2, 3, 7, 8},
         {1, 2, 3, 4, 7},
@@ -19,5 +22,5 @@ TEST(Apriori, BasicTest) {
         {2, 5, 6, 7}
     };
 
-    basket_vector_t result{apriori(input, 2)};
+//    basket_vector_t result{apriori(input, 2)};
 }
