@@ -11,7 +11,7 @@ TEST(sample_test_case, sample_test)
 
 TEST(Apriori, BasicTest) {
 
-    std::unordered_set<basket_t> input {
+    const std::unordered_set<basket_t> input {
         {2, 5, 6},
         {2, 3, 7, 8},
         {1, 2, 3, 4, 7},
@@ -22,5 +22,5 @@ TEST(Apriori, BasicTest) {
         {2, 5, 6, 7}
     };
 
-//    basket_vector_t result{apriori(input, 2)};
+    basket_vector_t result{apriori(input.cbegin(), input.cend(), 2)};
 }
