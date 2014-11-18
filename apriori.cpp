@@ -8,7 +8,8 @@
 static inline void count_singletons(
     const basket_vector_t &baskets,
     std::size_t support,
-    basket_vector_t *output) {
+    basket_vector_t *output)
+{
 
     std::unordered_map<item_t, std::size_t> counts{};
     for (const basket_t &basket : baskets) {
@@ -27,12 +28,15 @@ static inline void count_singletons(
 using basket_iter_t = basket_vector_t::const_iterator;
 
 static inline basket_vector_t candidate_gen(
-    basket_iter_t prev_begin, basket_iter_t prev_end) {
+    basket_iter_t prev_begin,
+    basket_iter_t prev_end)
+{
     basket_vector_t candidates{};
     return candidates;
 }
 
-static inline bool contains(const basket_t &needle, const basket_t &haystack) {
+static inline bool contains(const basket_t &needle, const basket_t &haystack)
+{
     auto h_pos = haystack.cbegin();
 
     for (item_t item : needle) {
@@ -63,7 +67,8 @@ struct BasketHash {
     }
 };
 
-basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support) {
+basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support)
+{
     assert(support <= baskets.size());
 
     // Step #1: Compute frequent singletons
@@ -101,7 +106,8 @@ basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support) {
 }
 
 template<class T>
-std::ostream& operator<<(std::ostream &out, const std::vector<T> &vec) {
+std::ostream& operator<<(std::ostream &out, const std::vector<T> &vec) 
+{
     auto begin = vec.cbegin();
     auto end = vec.cend();
 
@@ -119,7 +125,8 @@ std::ostream& operator<<(std::ostream &out, const std::vector<T> &vec) {
     return out;
 }
 
-int main () {
+int main () 
+{
     basket_vector_t input = {
         {2, 5, 6},
         {2, 3, 7, 8},
