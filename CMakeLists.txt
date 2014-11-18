@@ -15,8 +15,6 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 # Unit Tests
 ################################
 # Add test cpp files
-add_executable(runUnitTests apriori_test.cpp )
-
-# Link test executable against gtest & gtest_main
-target_link_libraries(runUnitTests gtest gtest_main)
-add_test( runUnitTests runUnitTests )
+add_executable(apriori_test apriori_test.cpp apriori.cpp)
+target_link_libraries(apriori_test gtest gtest_main)
+add_test( apriori_test apriori_test )
