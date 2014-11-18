@@ -86,12 +86,13 @@ static basket_vector_t candidate_gen(
 
             if (std::equal(b1_begin, b1_pre_end, b2_begin)) {
                 basket_t basket{b1_begin, b1_pre_end};
+
                 item_t _min = std::min(*b1_pre_end, *b2_pre_end);
-                item_t _max = std::max(*b1_pre_end, *b2_pre_end);
                 basket.push_back(_min);
+
+                item_t _max = std::max(*b1_pre_end, *b2_pre_end);
                 basket.push_back(_max);
 
-                std::cout << "CB: " << basket << std::endl;
                 output.push_back(basket);
             }
         }
@@ -132,19 +133,27 @@ basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support)
 {
     assert(support <= baskets.size());
 
+    ///////////////////////////////////////////////////////////////
     // Step #1: Compute frequent singletons
     basket_vector_t output{};
     count_singletons(baskets, support, &output);
 
     std::cout << "Singletons: " << output << std::endl;
 
-    auto prev_begin = output.cbegin();
-    auto prev_end = output.cend();
+    ///////////////////////////////////////////////////////////////
+    // Step 2: iteratively produce item sets of increasing length
+
+    // Index of the first entry in the output vector for the previous
+    // iteration of apriori.
+    std::size_t prev_first = 0;
 
     while(true) {
-        basket_vector_t candidates{candidate_gen(prev_begin, prev_end)};
-        prev_begin = prev_end;
+        auto i_begin = output.cbegin() + prev_first;
+        auto i_end = output.cend();
+        basket_vector_t candidates{candidate_gen(i_begin, i_end)};
 
+        // The next iteration starts where the previous left off
+        prev_first = output.size();
         std::unordered_map<basket_t, std::size_t, BasketHash> counts{};
 
         for (const basket_t &basket : baskets) {
@@ -160,9 +169,8 @@ basket_vector_t apriori(const basket_vector_t &baskets, std::size_t support)
                 output.push_back(it->first);
         }
 
-        prev_end = output.cend();
-        if (prev_begin == prev_end)
-            return output;
+        if (prev_first == output.size())
+            return output; // nothing added this iteration
     }
 
     return output;
