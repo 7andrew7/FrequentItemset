@@ -63,5 +63,5 @@ TEST(Apriori, BasicTest) {
     const std::unordered_set<basket_t> result_set{result.cbegin(), result.cend()};
 
     const auto expected_set = brute_force_frequent_items(input, 2, 9);
-    EXPECT_EQ(result_set, expected_set);
+    EXPECT_EQ(expected_set, result_set);
 }
