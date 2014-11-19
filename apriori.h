@@ -169,7 +169,7 @@ basket_vector_t apriori(
         std::unordered_map<basket_t, std::size_t> counts{};
 
         for (auto it = first; it != last; ++it) {
-            const basket_t basket{*it};
+            const basket_t &basket{*it};
             for (const basket_t &candidate : candidates) {
                 if (contains(candidate, basket)) {
                     counts[candidate]++;
