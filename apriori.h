@@ -78,9 +78,8 @@ static basket_vector_t candidate_gen(
     const basket_vec_iterator prev_end)
 {
     basket_vector_t output{};
-    basket_vec_iterator i1{prev_begin};
-
-    for (; i1 != prev_end; ++i1) { // for each itemset
+    
+    for (basket_vec_iterator i1{prev_begin}; i1 != prev_end; ++i1) {
         for (basket_vec_iterator i2{i1 + 1}; i2 != prev_end; ++i2) {
 
             const basket_t &b1{*i1};
