@@ -1,6 +1,6 @@
 
 ## One-time setup
-get https://googletest.googlecode.com/files/gtest-1.7.0.zip
+wget https://googletest.googlecode.com/files/gtest-1.7.0.zip
 unzip gtest-1.7.0.zip
 
 ## Debug builds
