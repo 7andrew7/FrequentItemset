@@ -110,6 +110,10 @@ if __name__ == '__main__':
     ]
 
     output = apriori(baskets, .25)
+    print '{'
     for i, sets in enumerate(output):
-        print '################ %d ##############' %  (i + 1)
-        print sets
+        for basket in sets:
+            strs = [str(x) for x in basket]
+            out = ','.join(strs)
+            print '    {%s},' % out
+    print '};'
