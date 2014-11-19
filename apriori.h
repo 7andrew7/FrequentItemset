@@ -99,7 +99,7 @@ static basket_vector_t candidate_gen(
                 item_t _max = std::max(*b1_pre_end, *b2_pre_end);
                 basket.push_back(_max);
 
-                output.push_back(basket);
+                output.push_back(std::move(basket));
             }
         }
     }
