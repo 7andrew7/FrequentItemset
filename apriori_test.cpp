@@ -52,7 +52,7 @@ TEST(Apriori, BasicTest) {
         {2, 5, 6, 7}
     };
 
-    basket_vector_t result{apriori(input.cbegin(), input.cend(), 2)};
+    const basket_set_t result{apriori(input.cbegin(), input.cend(), 2)};
     const std::unordered_set<basket_t> result_set{result.cbegin(), result.cend()};
 
     const auto expected_set = brute_force_frequent_items(input, 2, 9);

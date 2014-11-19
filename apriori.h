@@ -9,7 +9,9 @@ using item_t = int32_t;
 
 using basket_t = std::vector<item_t>;
 
-using basket_vector_t = std::vector<basket_t>;
+using basket_set_t = std::vector<basket_t>;
+
+using basket_set_iterator = basket_set_t::const_iterator;
 
 namespace std
 {
@@ -51,7 +53,7 @@ static inline void count_singletons(
     const ForwardIterator first,
     const ForwardIterator last,
     std::size_t support,
-    basket_vector_t *output)
+    basket_set_t *output)
 {
 
     std::unordered_map<item_t, std::size_t> counts{};
@@ -68,19 +70,17 @@ static inline void count_singletons(
     }
 }
 
-using basket_vec_iterator = basket_vector_t::const_iterator;
-
 /**
  * Compute candidates item sets, given item sets from a previous invocation.
  */
-static basket_vector_t candidate_gen(
-    const basket_vec_iterator prev_begin,
-    const basket_vec_iterator prev_end)
+static basket_set_t candidate_gen(
+    const basket_set_iterator prev_begin,
+    const basket_set_iterator prev_end)
 {
-    basket_vector_t output{};
+    basket_set_t output{};
     
-    for (basket_vec_iterator i1{prev_begin}; i1 != prev_end; ++i1) {
-        for (basket_vec_iterator i2{i1 + 1}; i2 != prev_end; ++i2) {
+    for (basket_set_iterator i1{prev_begin}; i1 != prev_end; ++i1) {
+        for (basket_set_iterator i2{i1 + 1}; i2 != prev_end; ++i2) {
 
             const basket_t &b1{*i1};
             const basket_t &b2{*i2};
@@ -137,7 +137,7 @@ static inline bool contains(
 }
 
 template <class ForwardIterator>
-basket_vector_t apriori(
+basket_set_t apriori(
     const ForwardIterator first,
     const ForwardIterator last,
     std::size_t support)
@@ -146,7 +146,7 @@ basket_vector_t apriori(
 
     ///////////////////////////////////////////////////////////////
     // Step #1: Compute frequent singletons
-    basket_vector_t output{};
+    basket_set_t output{};
     count_singletons(first, last, support, &output);
 
     ///////////////////////////////////////////////////////////////
@@ -159,7 +159,7 @@ basket_vector_t apriori(
     for (auto k = 2; ; ++k) {
         auto i_begin = output.cbegin() + prev_first;
         auto i_end = output.cend();
-        basket_vector_t candidates{candidate_gen(i_begin, i_end)};
+        basket_set_t candidates{candidate_gen(i_begin, i_end)};
 
         // std::cout << "-------------- " << k << " -----------" << std::endl;
         // std::cout << "C " << candidates << std::endl;
@@ -185,7 +185,7 @@ basket_vector_t apriori(
         if (prev_first == output.size())
             return output; // nothing added this iteration
 
-        // basket_vector_t newly_added{output.cbegin() + prev_first, output.cend()};
+        // basket_set_t newly_added{output.cbegin() + prev_first, output.cend()};
         // std::cout << "A " << newly_added << std::endl;
     }
 
