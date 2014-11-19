@@ -68,20 +68,20 @@ static inline void count_singletons(
     }
 }
 
-using basket_set_iterator = basket_vector_t::const_iterator;
+using basket_vec_iterator = basket_vector_t::const_iterator;
 
 /**
  * Compute candidates item sets, given item sets from a previous invocation.
  */
 static basket_vector_t candidate_gen(
-    const basket_set_iterator prev_begin,
-    const basket_set_iterator prev_end)
+    const basket_vec_iterator prev_begin,
+    const basket_vec_iterator prev_end)
 {
     basket_vector_t output{};
-    basket_set_iterator i1{prev_begin};
+    basket_vec_iterator i1{prev_begin};
 
     for (; i1 != prev_end; ++i1) { // for each itemset
-        for (basket_set_iterator i2{i1 + 1}; i2 != prev_end; ++i2) {
+        for (basket_vec_iterator i2{i1 + 1}; i2 != prev_end; ++i2) {
 
             const basket_t &b1{*i1};
             const basket_t &b2{*i2};
