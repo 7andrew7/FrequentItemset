@@ -15,5 +15,5 @@ then
 else
     echo "Installing data dependencies"
     mkdir data
-    wget https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data -o ./data/agaricus-lepiota.data
+    wget https://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data -O ./data/agaricus-lepiota.data
 fi
