@@ -15,9 +15,10 @@ using basket_set_t = std::vector<basket_t>;
 
 using basket_set_iterator = basket_set_t::const_iterator;
 
+// Crazy-ass pre-processor macros for timing code regions
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
-#define ATLOCATION __FILE__ ":" TOSTRING(__LINE__)
+#define ATLOCATION std::string{__FUNCTION__} + ":" TOSTRING(__LINE__)
 #define SCOPED_TIMING boost::timer::auto_cpu_timer __TIMER__{ATLOCATION  " %t sec CPU, %w sec real\n"}
 #define BEGIN_TIMING { SCOPED_TIMING;
 #define END_TIMING }
