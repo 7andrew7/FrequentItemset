@@ -20,6 +20,9 @@ using basket_set_iterator = basket_set_t::const_iterator;
 #define TOSTRING(x) STRINGIFY(x)
 #define SCOPED_TIMING(tag) boost::timer::auto_cpu_timer __TIMER__{std::string{tag} + \
  " [line " + TOSTRING(__LINE__)  + "] %t sec CPU, %w sec real\n"}
+
+ #define FUNCTION_TIMING SCOPED_TIMING(__func__)
+
 #define BEGIN_TIMING(tag) { SCOPED_TIMING(tag);
 #define END_TIMING }
 
@@ -65,7 +68,7 @@ static inline void count_singletons(
     std::size_t support,
     basket_set_t *output)
 {
-    SCOPED_TIMING(__func__);
+    FUNCTION_TIMING;
     std::unordered_map<item_t, std::size_t> counts{};
     for (auto it = first; it != last; ++it) {
         basket_t basket{*it};
@@ -87,7 +90,7 @@ static basket_set_t candidate_gen(
     const basket_set_iterator prev_begin,
     const basket_set_iterator prev_end)
 {
-    SCOPED_TIMING(__func__);
+    FUNCTION_TIMING;
 
     basket_set_t output{};
     
