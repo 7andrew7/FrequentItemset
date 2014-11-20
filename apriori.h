@@ -172,6 +172,8 @@ basket_set_t apriori(
         auto i_end = output.cend();
         basket_set_t candidates{candidate_gen(i_begin, i_end)};
 
+        SCOPED_TIMING;
+
         // std::cout << "-------------- " << k << " -----------" << std::endl;
         // std::cout << "C " << candidates.size() << std::endl;
 
