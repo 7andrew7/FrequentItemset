@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 project (apriori)
 
-find_package(Boost 1.56.0 REQUIRED timer system)
+find_package(Boost 1.54.0 REQUIRED timer system)
 include_directories(${Boost_INCLUDE_DIRS})
 
 set(CMAKE_CXX_FLAGS_DEBUG "-Wall -O0 -g -std=c++11")
