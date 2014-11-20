@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include <boost/timer/timer.hpp>
+
 using item_t = int32_t;
 
 using basket_t = std::vector<item_t>;
@@ -12,6 +14,13 @@ using basket_t = std::vector<item_t>;
 using basket_set_t = std::vector<basket_t>;
 
 using basket_set_iterator = basket_set_t::const_iterator;
+
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+#define ATLOCATION __FILE__ ":" TOSTRING(__LINE__)
+#define SCOPED_TIMING boost::timer::auto_cpu_timer __TIMER__{ATLOCATION  " %t sec CPU, %w sec real\n"}
+#define BEGIN_TIMING { SCOPED_TIMING;
+#define END_TIMING }
 
 namespace std
 {
@@ -55,7 +64,7 @@ static inline void count_singletons(
     std::size_t support,
     basket_set_t *output)
 {
-
+    SCOPED_TIMING;
     std::unordered_map<item_t, std::size_t> counts{};
     for (auto it = first; it != last; ++it) {
         basket_t basket{*it};
@@ -77,11 +86,12 @@ static basket_set_t candidate_gen(
     const basket_set_iterator prev_begin,
     const basket_set_iterator prev_end)
 {
+    SCOPED_TIMING;
+
     basket_set_t output{};
     
     for (basket_set_iterator i1{prev_begin}; i1 != prev_end; ++i1) {
         for (basket_set_iterator i2{i1 + 1}; i2 != prev_end; ++i2) {
-
             const basket_t &b1{*i1};
             const basket_t &b2{*i2};
 
@@ -162,7 +172,7 @@ basket_set_t apriori(
         basket_set_t candidates{candidate_gen(i_begin, i_end)};
 
         // std::cout << "-------------- " << k << " -----------" << std::endl;
-        // std::cout << "C " << candidates << std::endl;
+        // std::cout << "C " << candidates.size() << std::endl;
 
         // The next iteration starts where the previous left off
         prev_first = output.size();
@@ -178,15 +188,15 @@ basket_set_t apriori(
         }
 
         for (auto it = counts.cbegin(); it != counts.cend(); ++it) {
-            if (it->second >= support)
+            if (it->second >= support) {
                 output.push_back(it->first);
+            }
         }
 
         if (prev_first == output.size())
             return output; // nothing added this iteration
 
-        // basket_set_t newly_added{output.cbegin() + prev_first, output.cend()};
-        // std::cout << "A " << newly_added << std::endl;
+//        std::cout << "A " << newly_added << std::endl;
     }
 
     return output;
