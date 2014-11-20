@@ -18,9 +18,9 @@ using basket_set_iterator = basket_set_t::const_iterator;
 // Crazy-ass pre-processor macros for timing code regions
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
-#define ATLOCATION std::string{__FUNCTION__} + ":" TOSTRING(__LINE__)
-#define SCOPED_TIMING boost::timer::auto_cpu_timer __TIMER__{ATLOCATION  " %t sec CPU, %w sec real\n"}
-#define BEGIN_TIMING { SCOPED_TIMING;
+#define SCOPED_TIMING(tag) boost::timer::auto_cpu_timer __TIMER__{std::string{tag} + \
+ " [line " + TOSTRING(__LINE__)  + "] %t sec CPU, %w sec real\n"}
+#define BEGIN_TIMING(tag) { SCOPED_TIMING(tag);
 #define END_TIMING }
 
 namespace std
@@ -65,7 +65,7 @@ static inline void count_singletons(
     std::size_t support,
     basket_set_t *output)
 {
-    SCOPED_TIMING;
+    SCOPED_TIMING(__func__);
     std::unordered_map<item_t, std::size_t> counts{};
     for (auto it = first; it != last; ++it) {
         basket_t basket{*it};
@@ -87,7 +87,7 @@ static basket_set_t candidate_gen(
     const basket_set_iterator prev_begin,
     const basket_set_iterator prev_end)
 {
-    SCOPED_TIMING;
+    SCOPED_TIMING(__func__);
 
     basket_set_t output{};
     
@@ -172,7 +172,7 @@ basket_set_t apriori(
         auto i_end = output.cend();
         basket_set_t candidates{candidate_gen(i_begin, i_end)};
 
-        SCOPED_TIMING;
+        SCOPED_TIMING("counts");
 
         // std::cout << "-------------- " << k << " -----------" << std::endl;
         // std::cout << "C " << candidates.size() << std::endl;
