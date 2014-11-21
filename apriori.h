@@ -2,7 +2,7 @@
 #include <cassert>
 #include <cstdint>
 #include <iostream>
-#include <unordered_map>
+#include <map>
 #include <vector>
 
 #include <boost/timer/timer.hpp>
@@ -21,7 +21,7 @@ using basket_set_iterator = basket_set_t::const_iterator;
 #define SCOPED_TIMING(tag) boost::timer::auto_cpu_timer __TIMER__{std::string{tag} + \
  " [line " + TOSTRING(__LINE__)  + "] %t sec CPU, %w sec real\n"}
 
- #define FUNCTION_TIMING SCOPED_TIMING(__func__)
+#define FUNCTION_TIMING SCOPED_TIMING(__func__)
 
 #define BEGIN_TIMING(tag) { SCOPED_TIMING(tag);
 #define END_TIMING }
@@ -69,7 +69,7 @@ static inline void count_singletons(
     basket_set_t *output)
 {
     FUNCTION_TIMING;
-    std::unordered_map<item_t, std::size_t> counts{};
+    std::map<item_t, std::size_t> counts{};
     for (auto it = first; it != last; ++it) {
         basket_t basket{*it};
         for (item_t item : basket)
@@ -182,7 +182,7 @@ basket_set_t apriori(
 
         // The next iteration starts where the previous left off
         prev_first = output.size();
-        std::unordered_map<basket_t, std::size_t> counts{};
+        std::map<basket_t, std::size_t> counts{};
 
         for (auto it = first; it != last; ++it) {
             const basket_t &basket{*it};
