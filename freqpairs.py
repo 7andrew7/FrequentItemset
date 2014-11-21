@@ -1,8 +1,8 @@
 from itertools import combinations
 from collections import Counter
 
-def freqpairs(it, support):
-    """Compute frequent pairs.
+def freqpairs_brute_force(it, support):
+    """Compute frequent pairs through brute force enumeration.
 
     :param it: A basket iterator containing tuples.
     :param support: Required support level as an integer count
@@ -13,7 +13,7 @@ def freqpairs(it, support):
     return (key for key, val in counter.iteritems() if val >= support)
 
 if __name__ == '__main__':
-    fp = freqpairs([
+    fp = freqpairs_brute_force([
         (2, 5, 6),
         (2, 3, 7, 8),
         (1, 2, 3, 4, 7),
