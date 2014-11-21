@@ -105,14 +105,8 @@ static basket_set_t candidate_gen(
             auto b2_pre_end = b2.cend() - 1;
 
             if (std::equal(b1_begin, b1_pre_end, b2_begin)) {
-                basket_t basket{b1_begin, b1_pre_end};
-
-                item_t _min = std::min(*b1_pre_end, *b2_pre_end);
-                basket.push_back(_min);
-
-                item_t _max = std::max(*b1_pre_end, *b2_pre_end);
-                basket.push_back(_max);
-
+                basket_t basket{b1};
+                basket.push_back(*b2_pre_end);
                 output.push_back(std::move(basket));
             }
         }
