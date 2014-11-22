@@ -13,9 +13,10 @@ using item_t = int32_t;
 static constexpr item_t null_elem = 0;
 
 class BasketSet {
-    using size_t = std::size_t;
 
 public:
+    using size_type = std::size_t;
+
     using Container = std::vector<item_t>;
     using Basket_iterator = Container::iterator;
     using Basket_const_iterator = Container::const_iterator;
@@ -46,14 +47,14 @@ public:
         _size++;
     }
 
-    size_t size() const {
+    size_type size() const {
         return _size;
     }
 
 private:
     // array of items; baskets are null-terminated
     Container _item_vec;
-    size_t _size;
+    size_type _size;
 };
 
 std::ostream &operator<<(std::ostream &out, const BasketSet &basket_set) {
