@@ -16,6 +16,10 @@ class BasketSet {
     using size_t = std::size_t;
 
 public:
+    using Container = std::vector<item_t>;
+    using Basket_iterator = Container::iterator;
+    using Basket_const_iterator = Container::const_iterator;
+
     BasketSet() : _item_vec{}, _size{0} { ; }
 
     BasketSet(std::initializer_list<std::initializer_list<item_t>> baskets) :
@@ -48,7 +52,7 @@ public:
 
 private:
     // array of items; baskets are null-terminated
-    std::vector<item_t> _item_vec;
+    Container _item_vec;
     size_t _size;
 };
 
