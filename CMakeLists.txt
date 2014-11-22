@@ -23,3 +23,7 @@ add_executable(apriori_test.exe apriori_test.cpp)
 target_link_libraries(apriori_test.exe ${Boost_LIBRARIES})
 target_link_libraries(apriori_test.exe gtest gtest_main)
 add_test( apriori_test.exe apriori_test )
+
+add_executable(basket_set_test.exe basket_set_test.cpp)
+target_link_libraries(basket_set_test.exe gtest gtest_main)
+add_test( basket_set_test.exe basket_set_test )
