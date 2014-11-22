@@ -18,7 +18,7 @@ TEST(BasketSet, DefaultConstructor)
 
 TEST(BasketSet, InitializerListConstructor)
 {
-    const BasketSet basket_set{
+    BasketSet basket_set{
         {2, 5, 6},
         {1, 2, 5, 9},
         {2, 3, 7, 8},
@@ -30,4 +30,9 @@ TEST(BasketSet, InitializerListConstructor)
     };
 
     EXPECT_EQ(8, basket_set.size());
+
+    const std::vector<item_t> basket{1, 6, 7};
+    basket_set.add_basket(basket);
+
+    EXPECT_EQ(9, basket_set.size());
 }

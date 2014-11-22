@@ -10,9 +10,9 @@
  */
 using item_t = int32_t;
 
-class BasketSet {
-    static constexpr item_t null_elem = 0;
+static constexpr item_t null_elem = 0;
 
+class BasketSet {
     using size_t = std::size_t;
 
 public:
@@ -29,7 +29,7 @@ public:
     void add_basket(std::initializer_list<item_t> basket)
     {
         _item_vec.insert(_item_vec.end(), basket);
-        _item_vec.push_back(0);
+        _item_vec.push_back(null_elem);
         _size++;
 
     }
@@ -51,7 +51,6 @@ private:
     std::vector<item_t> _item_vec;
     size_t _size;
 };
-
 
 std::ostream &operator<<(std::ostream &out, const BasketSet &basket_set) {
     out << "Print something here!";
