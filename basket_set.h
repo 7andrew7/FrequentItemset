@@ -47,6 +47,26 @@ public:
         _size++;
     }
 
+    void add_basket(Basket_const_iterator i1, Basket_const_iterator i2)
+    {
+        _item_vec.insert(_item_vec.end(), i1, i2);
+        _item_vec.push_back(null_elem);
+        _size++;
+    }
+
+    template <class BinaryFunction>
+    void for_each(BinaryFunction func) const
+    {
+        auto it1 = _item_vec.cbegin();
+
+        for (; it1 != _item_vec.cend(); ++it1) {
+            for (auto it2 = it1 + 1; it2 != _item_vec.cend() && *it2 != 0; ++it2) {
+                func(it1, it2);
+                it1 = it2 + 1;
+            }
+        }
+    }
+
     size_type size() const {
         return _size;
     }
@@ -58,6 +78,17 @@ private:
 };
 
 std::ostream &operator<<(std::ostream &out, const BasketSet &basket_set) {
-    out << "Print something here!";
+    using bsi = BasketSet::Basket_const_iterator;
+
+    out << "( ";
+
+    basket_set.for_each([&out](bsi i1, bsi i2) {
+        out << "( ";
+        for (; i1 != i2; ++i1) {
+            out << *i1 << " ";
+        }
+        out << ")";
+    });
+
     return out;
 }
