@@ -35,4 +35,6 @@ TEST(BasketSet, InitializerListConstructor)
     basket_set.add_basket(basket);
 
     EXPECT_EQ(9, basket_set.size());
+
+    std::cout << basket_set << std::endl;
 }

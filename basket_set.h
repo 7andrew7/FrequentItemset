@@ -36,7 +36,6 @@ public:
         _item_vec.insert(_item_vec.end(), basket);
         _item_vec.push_back(null_elem);
         _size++;
-
     }
 
     template <class C>
@@ -57,13 +56,13 @@ public:
     template <class BinaryFunction>
     void for_each(BinaryFunction func) const
     {
-        auto it1 = _item_vec.cbegin();
 
-        for (; it1 != _item_vec.cend(); ++it1) {
-            for (auto it2 = it1 + 1; it2 != _item_vec.cend() && *it2 != 0; ++it2) {
-                func(it1, it2);
-                it1 = it2 + 1;
-            }
+        for (auto it1 = _item_vec.cbegin(); it1 != _item_vec.cend();) {
+            auto it2 = it1 + 1;
+            while (*it2 != null_elem)
+                ++it2;
+            func(it1, it2);
+            it1 = it2 + 1;
         }
     }
 
@@ -83,12 +82,15 @@ std::ostream &operator<<(std::ostream &out, const BasketSet &basket_set) {
     out << "( ";
 
     basket_set.for_each([&out](bsi i1, bsi i2) {
-        out << "( ";
+        out << "(";
+        out << *i1++;
         for (; i1 != i2; ++i1) {
-            out << *i1 << " ";
+            out << ", " << *i1;
         }
-        out << ")";
+        out << "), ";
     });
+
+    out << ")";
 
     return out;
 }
