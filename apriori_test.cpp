@@ -19,7 +19,7 @@ std::unordered_set<basket_t> brute_force_frequent_items(
 {
     std::unordered_set<basket_t> output{};
 
-    auto max_val = (1 << range);
+    std::size_t max_val = (1 << range);
     for (std::size_t i = 1; i < max_val; ++i) {
         basket_t candidate{};
         for (std::size_t j = 0 ; j < range; ++j) {
