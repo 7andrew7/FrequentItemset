@@ -31,6 +31,14 @@ public:
         }
     }
 
+    template<class T>
+    BasketSet(const T &baskets) :  _item_vec{}, _size{0}
+    {
+        for (const auto &basket : baskets) {
+            add_basket(basket);
+        }
+    }
+
     void add_basket(std::initializer_list<item_t> basket)
     {
         _item_vec.insert(_item_vec.end(), basket);
@@ -46,7 +54,8 @@ public:
         _size++;
     }
 
-    void add_basket(Basket_const_iterator i1, Basket_const_iterator i2)
+    template <class ForwardIterator>
+    void add_basket(ForwardIterator i1, ForwardIterator i2)
     {
         _item_vec.insert(_item_vec.end(), i1, i2);
         _item_vec.push_back(null_elem);
