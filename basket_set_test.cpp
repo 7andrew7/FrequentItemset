@@ -6,7 +6,7 @@
 
 TEST(BasketSet, DefaultConstructor)
 {
-    BasketSet basket_set{};
+    BasketSet<int32_t> basket_set{};
 
     EXPECT_EQ(0, basket_set.size());
 
@@ -18,7 +18,7 @@ TEST(BasketSet, DefaultConstructor)
 
 TEST(BasketSet, InitializerListConstructor)
 {
-    BasketSet basket_set{
+    BasketSet<int32_t> basket_set{
         {2, 5, 6},
         {1, 2, 5, 9},
         {2, 3, 7, 8},
@@ -31,7 +31,7 @@ TEST(BasketSet, InitializerListConstructor)
 
     EXPECT_EQ(8, basket_set.size());
 
-    const std::vector<item_t> basket{1, 6, 7};
+    const std::vector<int32_t> basket{1, 6, 7};
     basket_set.add_basket(basket);
 
     EXPECT_EQ(9, basket_set.size());
@@ -41,9 +41,7 @@ TEST(BasketSet, InitializerListConstructor)
 
 TEST(BasketSet, ForEach)
 {
-    using bsi = BasketSet::Basket_const_iterator;
-
-    std::vector<std::vector<item_t>> input = {
+    std::vector<std::vector<int16_t>> input = {
         {2, 5, 6},
         {1, 2, 5, 9},
         {2, 3, 7, 8},
@@ -54,13 +52,16 @@ TEST(BasketSet, ForEach)
         {1, 2, 3, 5, 7}
     };
 
-    BasketSet basket_set{input};
+    BasketSet<int16_t> basket_set{input};
 
     auto it = input.cbegin();
     std::size_t sz{0};
 
+    // work around lack of generic lambda in c++11
+    using bsi = BasketSet<int16_t>::Basket_const_iterator;
+
     basket_set.for_each([&it, &sz](bsi i1, bsi i2) {
-        std::vector<item_t> vec{i1, i2};
+        std::vector<int16_t> vec{i1, i2};
         EXPECT_EQ(*it++, vec);
         sz++;
     });

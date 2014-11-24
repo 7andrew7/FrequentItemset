@@ -8,23 +8,20 @@
  * Encode a basket set as a vector containing concatenated, null-terminated
  * baskets.  Each basket is a run of items in sorted order.
  */
-using item_t = int32_t;
 
-static constexpr item_t null_elem = 0;
-
+template <typename I, typename Container = std::vector<I>>
 class BasketSet {
 
 public:
     using size_type = std::size_t;
 
-    using Container = std::vector<item_t>;
-    using Basket_iterator = Container::iterator;
-    using Basket_const_iterator = Container::const_iterator;
+    using Basket_iterator = typename Container::iterator;
+    using Basket_const_iterator = typename Container::const_iterator;
 
-    BasketSet() : _item_vec{}, _size{0} { ; }
+    BasketSet() : _item_vec{}, _size{0}, _null_elem{0} { ; }
 
-    BasketSet(std::initializer_list<std::initializer_list<item_t>> baskets) :
-        _item_vec{}, _size{0}
+    BasketSet(std::initializer_list<std::initializer_list<I>> baskets) :
+        _item_vec{}, _size{0}, _null_elem{0}
     {
         for (const auto &basket : baskets) {
             add_basket(basket);
@@ -32,17 +29,17 @@ public:
     }
 
     template<class T>
-    BasketSet(const T &baskets) :  _item_vec{}, _size{0}
+    BasketSet(const T &baskets) :  _item_vec{}, _size{0}, _null_elem{0}
     {
         for (const auto &basket : baskets) {
             add_basket(basket);
         }
     }
 
-    void add_basket(std::initializer_list<item_t> basket)
+    void add_basket(std::initializer_list<I> basket)
     {
         _item_vec.insert(_item_vec.end(), basket);
-        _item_vec.push_back(null_elem);
+        _item_vec.push_back(_null_elem);
         _size++;
     }
 
@@ -50,7 +47,7 @@ public:
     void add_basket(const C& container)
     {
         _item_vec.insert(_item_vec.end(), container.cbegin(), container.end());
-        _item_vec.push_back(null_elem);
+        _item_vec.push_back(_null_elem);
         _size++;
     }
 
@@ -58,7 +55,7 @@ public:
     void add_basket(ForwardIterator i1, ForwardIterator i2)
     {
         _item_vec.insert(_item_vec.end(), i1, i2);
-        _item_vec.push_back(null_elem);
+        _item_vec.push_back(_null_elem);
         _size++;
     }
 
@@ -68,7 +65,7 @@ public:
 
         for (auto it1 = _item_vec.cbegin(); it1 != _item_vec.cend();) {
             auto it2 = it1 + 1;
-            while (*it2 != null_elem)
+            while (*it2 != _null_elem)
                 ++it2;
             func(it1, it2);
             it1 = it2 + 1;
@@ -83,10 +80,12 @@ private:
     // array of items; baskets are null-terminated
     Container _item_vec;
     size_type _size;
+    const I _null_elem;
 };
 
-std::ostream &operator<<(std::ostream &out, const BasketSet &basket_set) {
-    using bsi = BasketSet::Basket_const_iterator;
+template<typename I, typename C>
+std::ostream &operator<<(std::ostream &out, const BasketSet<I, C> &basket_set) {
+    using bsi = typename BasketSet<I,C>::Basket_const_iterator;
 
     out << "( ";
 
