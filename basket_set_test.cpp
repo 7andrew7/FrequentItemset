@@ -58,9 +58,9 @@ TEST(BasketSet, ForEach)
     std::size_t sz{0};
 
     // work around lack of generic lambda in c++11
-    using bsi = BasketSet<int16_t>::Basket_const_iterator;
+    using Iter = decltype(basket_set)::Basket_const_iterator;
 
-    basket_set.for_each([&it, &sz](bsi i1, bsi i2) {
+    basket_set.for_each([&it, &sz](Iter i1, Iter i2) {
         std::vector<int16_t> vec{i1, i2};
         EXPECT_EQ(*it++, vec);
         sz++;
