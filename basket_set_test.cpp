@@ -1,6 +1,7 @@
 #include "basket_set.h"
 
 #include <iostream>
+#include <sstream>
 
 #include "gtest/gtest.h"
 
@@ -35,8 +36,16 @@ TEST(BasketSet, InitializerListConstructor)
     basket_set.add_basket(basket);
 
     EXPECT_EQ(9, basket_set.size());
+}
 
-    std::cout << basket_set << std::endl;
+TEST(BasketSet, StreamOut)
+{
+    BasketSet<int32_t> basket_set{{2, 5, 6}, {1, 2, 5, 9}};
+
+    std::stringstream ss;
+    ss << basket_set;
+
+    ASSERT_EQ("( (2, 5, 6), (1, 2, 5, 9), )", ss.str());
 }
 
 TEST(BasketSet, ForEach)
