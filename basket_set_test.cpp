@@ -18,6 +18,14 @@ TEST(BasketSet, DefaultConstructor)
     EXPECT_EQ(basket_set, basket_set);
 }
 
+TEST(BasketSet, Equality)
+{
+    BasketSet<int32_t> b1{{2, 5, 6},{1, 2, 5, 9}};
+    BasketSet<int32_t> b2{{1, 2, 5, 9}, {2, 5, 6}};
+
+    EXPECT_EQ(b1, b2);
+}
+
 TEST(BasketSet, InitializerListConstructor)
 {
     BasketSet<int32_t> basket_set{
