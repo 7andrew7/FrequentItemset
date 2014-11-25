@@ -21,7 +21,7 @@ public:
     BasketSet() : _item_vec{}, _size{0}, _null_elem{0} { ; }
 
     BasketSet(std::initializer_list<std::initializer_list<I>> baskets) :
-        _item_vec{}, _size{0}, _null_elem{0}
+        BasketSet{}
     {
         for (const auto &basket : baskets) {
             add_basket(basket);
@@ -29,7 +29,7 @@ public:
     }
 
     template<class T>
-    BasketSet(const T &baskets) :  _item_vec{}, _size{0}, _null_elem{0}
+    BasketSet(const T &baskets) : BasketSet{}
     {
         for (const auto &basket : baskets) {
             add_basket(basket);
