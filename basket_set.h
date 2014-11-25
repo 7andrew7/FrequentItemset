@@ -76,6 +76,11 @@ public:
         return _size;
     }
 
+    bool operator==(const BasketSet<I, Container> &other) const
+    {
+       return (this->_item_vec == other._item_vec);
+    }
+
 private:
     // array of items; baskets are null-terminated
     Container _item_vec;

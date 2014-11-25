@@ -15,6 +15,7 @@ TEST(BasketSet, DefaultConstructor)
     basket_set.add_basket({1, 3, 7});
 
     EXPECT_EQ(2, basket_set.size());
+    EXPECT_EQ(basket_set, basket_set);
 }
 
 TEST(BasketSet, InitializerListConstructor)
