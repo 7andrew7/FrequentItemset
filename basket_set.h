@@ -59,6 +59,13 @@ public:
         _size++;
     }
 
+    // Add a singleton item
+    void add_basket(I item) {
+        _item_vec.push_back(item);
+        _item_vec.push_back(_null_elem);
+        _size++;
+    }
+
     template <class BinaryFunction>
     void for_each(BinaryFunction func) const
     {
