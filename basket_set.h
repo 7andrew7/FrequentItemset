@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <set>
 #include <vector>
 
 /**
@@ -85,7 +86,19 @@ public:
 
     bool operator==(const BasketSet<I, Container> &other) const
     {
-       return (this->_item_vec == other._item_vec);
+        std::set<Container> s1{};
+        this->for_each([&s1](Basket_const_iterator b1, Basket_const_iterator b2)
+        {
+            s1.insert({b1, b2});
+        });
+
+        std::set<Container> s2{};
+        this->for_each([&s2](Basket_const_iterator b1, Basket_const_iterator b2)
+        {
+            s2.insert({b1, b2});
+        });
+
+       return (s1 == s2);
     }
 
 private:
