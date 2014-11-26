@@ -60,7 +60,16 @@ public:
        return (_containers == other._containers);
     }
 
-    friend std::ostream & operator<<(std::ostream &, const BasketSet&);
+    template <class BinaryFunction>
+    void for_each(BinaryFunction func) const
+    {
+        for (std::size_t sz = 1; sz < MAX_BASKET_SIZE; ++sz) {
+            const Container &container = _containers[sz];
+            for (auto it = container.cbegin(); it != container.cend(); it += sz) {
+                func(it, it + sz);
+            }
+        }
+    }
 
 private:
     std::array<Container, MAX_BASKET_SIZE> _containers;
@@ -69,14 +78,12 @@ private:
 std::ostream &operator<<(std::ostream &out, const BasketSet &basket_set) {
 
     std::ostream_iterator<item_t> out_it (out, ",");
+    using Iter = Container::const_iterator;
+    basket_set.for_each([&out, &out_it](Iter i1, Iter i2) {
+        out << "(";
+        std::copy(i1, i2, out_it);
+        out << "),";
+    });
 
-    for (std::size_t sz = 1; sz < MAX_BASKET_SIZE; ++sz) {
-        const Container &container = basket_set._containers[sz];
-        for (auto it = container.cbegin(); it != container.cend(); it += sz) {
-            out << "(";
-            std::copy(it, it + sz, out_it);
-            out << "),";
-        }
-    }
     return out;
 }
