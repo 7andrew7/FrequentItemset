@@ -8,6 +8,26 @@
 #include <map>
 
 /**
+ * Compute frequent items for k>=2.
+
+ * in: The immutable set of baskets
+ * support: Support threshold (an integer)
+ * prev_l: Frequent items from the previous generation
+ * out: Final basket_set containing all frequent items.
+ * current_l: Current iteration's frequent items
+ */
+template <class T, int k>
+void frequent_items_k(
+    const BasketSet<T> &in,
+    typename BasketSet<T>::size_type support,
+    const std::vector<std::array<T, k-1>> &prev_l,
+    BasketSet<T> *out,
+    std::vector<std::array<T, k>> *current_l)
+{
+
+}
+
+/**
  * Compute frequent items over the given input set.
  */
 template <class T>
