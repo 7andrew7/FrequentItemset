@@ -1,14 +1,11 @@
-#include "fi.h"
+#include "apriori.h"
 
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <vector>
 
-using item_t = int32_t;
-using BasketSetType = BasketSet<item_t>;
-
-static void read_input(BasketSetType *input) {
+static void read_input(BasketSet *input) {
     std::ifstream ifs{"../data/mushroom.dat", std::ifstream::in};
 
     std::string line;
@@ -27,12 +24,12 @@ static void read_input(BasketSetType *input) {
 }
 
 int main() {
-    BasketSetType input{};
-    BasketSetType output{};
+    BasketSet input{};
+    BasketSet output{};
     read_input(&input);
 
     std::cout << "Read " << input.size() << " inputs." << std::endl;
 
-    frequent_items(input, 500, &output);
+    apriori(input, 500, &output);
     std::cout << output << std::endl;
 }
