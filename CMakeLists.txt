@@ -28,6 +28,10 @@ add_executable(basket_set_test.exe basket_set_test.cpp)
 target_link_libraries(basket_set_test.exe gtest gtest_main)
 add_test( basket_set_test basket_set_test.exe )
 
+add_executable(basket_set_test2.exe basket_set_test2.cpp)
+target_link_libraries(basket_set_test2.exe gtest gtest_main)
+add_test( basket_set_test2 basket_set_test2.exe )
+
 add_executable(fi_test.exe fi_test.cpp)
 target_link_libraries(fi_test.exe gtest gtest_main)
 target_link_libraries(fi_test.exe ${Boost_LIBRARIES})
