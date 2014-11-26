@@ -39,13 +39,6 @@ std::unordered_set<basket_t> brute_force_frequent_items(
     return output;
 }
 
-TEST(Apriori, Contains) {
-    EXPECT_TRUE(contains({1, 3, 5}, {0, 1, 2, 3, 4, 5}));
-    EXPECT_TRUE(contains({1}, {0, 1, 2, 3, 4, 5}));
-    EXPECT_FALSE(contains({1, 7}, {0, 1, 2, 3, 4, 5}));
-    EXPECT_FALSE(contains({1, 3}, {0, 1, 2, 4, 5}));
-}
-
 TEST(Apriori, BasicTest) {
 
     const basket_set_t input {
