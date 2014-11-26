@@ -24,7 +24,48 @@ void frequent_items_k(
     BasketSet<T> *out,
     std::vector<std::array<T, k>> *current_l)
 {
+    using KeyType = std::array<T, k>;
+    using Iter = typename BasketSet<T>::Basket_const_iterator;
 
+    // Step 1: generate candidates
+    std::map<KeyType, std::size_t> candidate_counts{};
+
+    for (auto it1 = prev_l.cbegin(); it1 != prev_l.cend(); ++it1) {
+        for (auto it2 = it1 + 1; it2 != prev_l.cend(); ++it2) {
+            const auto &b1 = *it1;
+            const auto &b2 = *it2;
+
+            auto b1_begin = b1.cbegin();
+            auto b1_pre_end = b1.cend() - 1;
+            auto b2_begin = b2.cbegin();
+            auto b2_pre_end = b2.cend() - 1;
+
+            if (std::equal(b1_begin, b1_pre_end, b2_begin)) {
+                KeyType key{};
+                std::copy(b1_begin, b1.cend(), key.begin());
+                key[key.size() - 1] = *b2_pre_end;
+
+                candidate_counts[key] = 0;
+            }
+        }
+    }
+
+    // Step 2: compute counts
+    in.for_each([&candidate_counts](Iter i1, Iter i2) {
+        for (auto it = candidate_counts.begin(); it != candidate_counts.end(); ++it) {
+            const KeyType &key = it->first;
+            if (std::includes(i1, i2, key.cbegin(), key.cend()))
+                it->second++;
+        }
+    });
+
+    // Step 3: Select candidates with support
+    for (auto it = candidate_counts.cbegin(); it != candidate_counts.cend(); ++it) {
+        if (it->second >= support) {
+            current_l->push_back(it->first);
+            out->add_basket(it->first);
+        }
+    }
 }
 
 /**
