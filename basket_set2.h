@@ -63,7 +63,17 @@ public:
 
     bool operator==(const BasketSet &other) const
     {
-       return (_containers == other._containers);
+        for (size_t i = 0; i < MAX_BASKET_SIZE; ++i) {
+            Container c1{_containers[i]};
+            Container c2{other._containers[i]};
+
+            std::sort(c1.begin(), c1.end());
+            std::sort(c2.begin(), c2.end());
+
+            if (c1 != c2)
+                return false;
+        }
+        return true;
     }
 
     template <class BinaryFunction>
