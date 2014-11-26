@@ -46,6 +46,12 @@ public:
         add_basket(ls.begin(), ls.end());
     }
 
+    // Add a singleton basket
+    void add_basket(item_t item)
+    {
+        _containers[1].push_back(item);
+    }
+
     std::size_t size() const 
     {
         std::size_t count{};
@@ -69,6 +75,16 @@ public:
                 func(it, it + sz);
             }
         }
+    }
+
+    Container &get_container(std::size_t sz)
+    {
+        return _containers[sz];
+    }
+
+    const Container &get_container(std::size_t sz) const
+    {
+        return _containers[sz];
     }
 
 private:

@@ -60,9 +60,8 @@ TEST(Apriori, BasicTest) {
 
     std::cout << expected << std::endl;
 
-    // const basket_set_t result{apriori(input.cbegin(), input.cend(), 2)};
-    // const std::unordered_set<basket_t> result_set{result.cbegin(), result.cend()};
+    BasketSet actual{};
+    apriori(input, 2, &actual);
 
-    // const auto expected_set = brute_force_frequent_items(input, 2, 9);
-    // EXPECT_EQ(expected_set, result_set);
+    EXPECT_EQ(expected, actual);
 }
