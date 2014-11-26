@@ -1,11 +1,13 @@
 #pragma once
 
-#include "basket_set.h"
 
 #include <algorithm>
 #include <array>
 #include <iostream>
 #include <map>
+
+#include "basket_set.h"
+#include "timing.h"
 
 /**
  * Compute frequent items for k>=2.
@@ -24,6 +26,8 @@ void frequent_items_k(
     BasketSet<T> *out,
     std::vector<std::array<T, k>> *current_l)
 {
+    FUNCTION_TIMING;
+
     using KeyType = std::array<T, k>;
     using PrevKeyType = std::array<T, k-1>;
 
@@ -89,6 +93,9 @@ void frequent_items(
     using Iter = typename BasketSet<T>::Basket_const_iterator;
 
     // Compute frequent singletons
+    std::vector<T> L1;
+    BEGIN_TIMING("singletons");
+
     std::map<T, std::size_t> C1{};
     in.for_each([&C1](Iter i1, Iter i2) {
         for (; i1 != i2; ++i1) {
@@ -96,7 +103,6 @@ void frequent_items(
         }
     });
 
-    std::vector<T> L1;
     for (auto it = C1.cbegin(); it != C1.cend(); ++it) {
         if (it->second >= support) {
             L1.push_back(it->first);
@@ -105,10 +111,14 @@ void frequent_items(
     }
 
     clear_container(C1);
+    END_TIMING;
 
     // compute doubleton candidates
     using KeyType = std::array<T, 2>;
     std::map<KeyType, std::size_t> C2{};
+    std::vector<KeyType> L2{};
+
+    BEGIN_TIMING("doubletons");
 
     for (auto it1 = L1.cbegin(); it1 != L1.cend(); ++it1) {
         for (auto it2 = it1 + 1; it2 != L1.cend(); ++it2) {
@@ -128,7 +138,6 @@ void frequent_items(
     });
 
     // compute doubletons with high support
-    std::vector<KeyType> L2{};
     for (auto it = C2.cbegin(); it != C2.cend(); ++it) {
         if (it->second >= support) {
             L2.push_back(it->first);
@@ -137,6 +146,7 @@ void frequent_items(
     }
 
     clear_container(C2);
+    END_TIMING;
 
     // k==3
     std::vector<std::array<T, 3>> L3{};
