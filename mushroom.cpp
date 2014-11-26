@@ -34,5 +34,5 @@ int main() {
     std::cout << "Read " << input.size() << " inputs." << std::endl;
 
     frequent_items(input, 500, &output);
-    std::cout << output << std::endl;
+    std::cout << "Found " << output.size() << " items." << std::endl;
 }
