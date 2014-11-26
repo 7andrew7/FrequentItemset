@@ -61,6 +61,8 @@ static inline void count_candidates(
     const BasketSet &input,
     std::map<std::vector<item_t>, std::size_t> *candidates)
 {
+    FUNCTION_TIMING;
+
     using Iter = Container::const_iterator;
     // Step 2: compute counts
     input.for_each([candidates](Iter i1, Iter i2) {
@@ -75,16 +77,16 @@ static inline void count_candidates(
 static inline std::size_t select_candidates(
     const BasketSet &input,
     std::size_t support,
-    std::size_t k,
     const std::map<std::vector<item_t>, std::size_t> &candidates,
-    BasketSet *output)
+    Container *items)
 {
-    Container items = output->get_container(k);
+    FUNCTION_TIMING;
+
     std::size_t count{0};
 
     for (auto it = candidates.cbegin(); it != candidates.cend(); ++it) {
         if (it->second >= support) {
-            items.insert(items.end(), it->first.cbegin(), it->first.cend());
+            items->insert(items->end(), it->first.cbegin(), it->first.cend());
             count++;
         }
     }
@@ -114,7 +116,9 @@ void apriori(
 
         candidate_gen(input, k - 1, prev_items, &candidates);
         count_candidates(input, &candidates);
-        std::size_t count = select_candidates(input, support, k, candidates, output);
+
+        Container &items = output->get_container(k);
+        std::size_t count = select_candidates(input, support, candidates, &items);
 
         if (count == 0)
             break;
