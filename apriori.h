@@ -35,9 +35,8 @@ static inline void count_singletons(
 /**
  * Compute candidates item sets, given item sets from a previous invocation.
  */
-static void candidate_gen(
+static inline void candidate_gen(
     const BasketSet &input,
-    std::size_t support,
     std::size_t k, // previous iteration number
     const Container &prev_items,
     std::map<std::vector<item_t>, std::size_t> *candidates) 
@@ -58,6 +57,21 @@ static void candidate_gen(
     }
 }
 
+static inline void count_candidates(
+    const BasketSet &input,
+    std::map<std::vector<item_t>, std::size_t> *candidates)
+{
+    using Iter = Container::const_iterator;
+    // Step 2: compute counts
+    input.for_each([candidates](Iter i1, Iter i2) {
+        for (auto it = candidates->begin(); it != candidates->end(); ++it) {
+            const std::vector<item_t> &key = it->first;
+            if (std::includes(i1, i2, key.cbegin(), key.cend()))
+                it->second++;
+        }
+    });
+}
+
 void apriori(
     const BasketSet &input,
     std::size_t support,
@@ -74,20 +88,13 @@ void apriori(
     // Step 2: iteratively produce item sets of increasing length
     ///////////////////////////////////////////////////////////////
 
-    for (auto k = 1; ; ++k) {
+    for (auto k = 2; ; ++k) {
         std::map<std::vector<item_t>, std::size_t> candidates{};
-        const Container &prev_items = output->get_container(k);
-        candidate_gen(input, support, k, prev_items, &candidates);
-        // basket_set_t candidates{candidate_gen(i_begin, i_end)};
+        const Container &prev_items = output->get_container(k - 1);
 
-        // SCOPED_TIMING("counts");
-
-        // // std::cout << "-------------- " << k << " -----------" << std::endl;
-        // // std::cout << "C " << candidates.size() << std::endl;
-
-        // // The next iteration starts where the previous left off
-        // prev_first = output.size();
-        // std::map<basket_t, std::size_t> counts{};
+        candidate_gen(input, k - 1, prev_items, &candidates);
+        count_candidates(input, &candidates);
+    //    select_candidates(input, support, k, candidates, output);
 
         // for (auto it = first; it != last; ++it) {
         //     const basket_t &basket{*it};
