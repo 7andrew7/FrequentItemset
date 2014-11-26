@@ -25,6 +25,8 @@ void frequent_items_k(
     std::vector<std::array<T, k>> *current_l)
 {
     using KeyType = std::array<T, k>;
+    using PrevKeyType = std::array<T, k-1>;
+
     using Iter = typename BasketSet<T>::Basket_const_iterator;
 
     // Step 1: generate candidates
@@ -32,8 +34,8 @@ void frequent_items_k(
 
     for (auto it1 = prev_l.cbegin(); it1 != prev_l.cend(); ++it1) {
         for (auto it2 = it1 + 1; it2 != prev_l.cend(); ++it2) {
-            const auto &b1 = *it1;
-            const auto &b2 = *it2;
+            const PrevKeyType &b1 = *it1;
+            const PrevKeyType &b2 = *it2;
 
             auto b1_begin = b1.cbegin();
             auto b1_pre_end = b1.cend() - 1;
