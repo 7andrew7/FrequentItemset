@@ -23,7 +23,6 @@ void frequent_items(
     in.for_each([&C1](Iter i1, Iter i2) {
         for (; i1 != i2; ++i1) {
             C1[*i1]++;
-            std::cout << *i1 << " " << C1[*i1] << std::endl;
         }
     });
 
@@ -45,13 +44,21 @@ void frequent_items(
         }
     }
 
-    // in.for_each([&C2](Iter i1, Iter i2) {
+    in.for_each([&C2](Iter i1, Iter i2) {
+        for (auto it = C2.begin(); it != C2.end(); ++it) {
+            const KeyType &key = it->first;
+            if (std::includes(i1, i2, key.cbegin(), key.cend()))
+                it->second++;
+        }
+    });
 
-    //     if (std::includes(i1, i2, ))
-    //         counts[*i1]++;
-    //         std::cout << *i1 << " " << counts[*i1] << std::endl;
-    //     }
-    // });
+    std::vector<KeyType> L2{};
+    for (auto it = C2.cbegin(); it != C2.cend(); ++it) {
+        if (it->second >= support) {
+            L2.push_back(it->first);
+            out->add_basket(it->first);
+        }
+    }
 
     return;
 }
