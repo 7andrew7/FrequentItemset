@@ -70,6 +70,13 @@ void frequent_items_k(
     }
 }
 
+// forceably free memory from a container by swapping with empty.
+template<class T>
+void clear_container(T &t){
+    T empty{};
+    empty.swap(t);
+}
+
 /**
  * Compute frequent items over the given input set.
  */
@@ -97,6 +104,8 @@ void frequent_items(
         }
     }
 
+    clear_container(C1);
+
     // compute doubleton candidates
     using KeyType = std::array<T, 2>;
     std::map<KeyType, std::size_t> C2{};
@@ -107,6 +116,9 @@ void frequent_items(
         }
     }
 
+    clear_container(L1);
+
+    // compute doubleton counts
     in.for_each([&C2](Iter i1, Iter i2) {
         for (auto it = C2.begin(); it != C2.end(); ++it) {
             const KeyType &key = it->first;
@@ -115,6 +127,7 @@ void frequent_items(
         }
     });
 
+    // compute doubletons with high support
     std::vector<KeyType> L2{};
     for (auto it = C2.cbegin(); it != C2.cend(); ++it) {
         if (it->second >= support) {
@@ -123,13 +136,17 @@ void frequent_items(
         }
     }
 
-    // Triple candidate generation
+    clear_container(C2);
+
+    // k==3
     std::vector<std::array<T, 3>> L3{};
     frequent_items_k(in, support, L2, out, &L3);
+    clear_container(L2);
 
     // k=4
     std::vector<std::array<T, 4>> L4{};
     frequent_items_k(in, support, L3, out, &L4);
+    clear_container(L3);
 
     return;
 }
