@@ -30,4 +30,6 @@ TEST(FrequentItems, SmallBasket)
     BasketSet<int32_t> output{};
 
     frequent_items(input, 2, &output);
+
+    std::cout << output << std::endl;
 }
