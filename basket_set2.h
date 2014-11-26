@@ -12,8 +12,7 @@ using Container = std::vector<item_t>;
 static constexpr int32_t MAX_BASKET_SIZE = 32;
 
 /**
- * Encode a basket set as a vector containing concatenated, null-terminated
- * baskets.  Each basket is a run of items in sorted order.
+ * Encode a basket set as a list of vectors of increasing length.
  */
 
 class BasketSet {
