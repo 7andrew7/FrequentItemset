@@ -16,7 +16,7 @@
  * out: Final basket_set containing all frequent items.
  * current_l: Current iteration's frequent items
  */
-template <class T, int k>
+template <class T, unsigned long k>
 void frequent_items_k(
     const BasketSet<T> &in,
     typename BasketSet<T>::size_type support,
@@ -124,51 +124,12 @@ void frequent_items(
     }
 
     // Triple candidate generation
-    using KeyType3 = std::array<T, 3>;
-    std::map<KeyType3, std::size_t> C3{};
-    for (auto it1 = L2.cbegin(); it1 != L2.cend(); ++it1) {
-        for (auto it2 = it1 + 1; it2 != L2.cend(); ++it2) {
-            const auto &b1 = *it1;
-            const auto &b2 = *it2;
+    std::vector<std::array<T, 3>> L3{};
+    frequent_items_k(in, support, L2, out, &L3);
 
-            auto b1_begin = b1.cbegin();
-            auto b1_pre_end = b1.cend() - 1;
-            auto b2_begin = b2.cbegin();
-            auto b2_pre_end = b2.cend() - 1;
-
-            if (std::equal(b1_begin, b1_pre_end, b2_begin)) {
-                KeyType3 key{};
-                std::copy(b1_begin, b1.cend(), key.begin());
-                key[key.size() - 1] = *b2_pre_end;
-
-                // Print in Normal order
-               std::copy(key.begin(),
-                         key.end(),
-                         std::ostream_iterator<int>(std::cout,";")
-                        );
-               std::cout << std::endl;
-                C3[key] = 0;
-            }
-        }
-    }
-
-    // Counts
-    in.for_each([&C3](Iter i1, Iter i2) {
-        for (auto it = C3.begin(); it != C3.end(); ++it) {
-            const KeyType3 &key = it->first;
-            if (std::includes(i1, i2, key.cbegin(), key.cend()))
-                it->second++;
-        }
-    });
-
-    // Pruning
-    std::vector<KeyType3> L3{};
-    for (auto it = C3.cbegin(); it != C3.cend(); ++it) {
-        if (it->second >= support) {
-            L3.push_back(it->first);
-            out->add_basket(it->first);
-        }
-    }
+    // k=4
+    std::vector<std::array<T, 4>> L4{};
+    frequent_items_k(in, support, L3, out, &L4);
 
     return;
 }
