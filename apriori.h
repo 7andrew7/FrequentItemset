@@ -72,6 +72,21 @@ static inline void count_candidates(
     });
 }
 
+static inline void select_candidates(
+    const BasketSet &input,
+    std::size_t support,
+    std::size_t k,
+    const std::map<std::vector<item_t>, std::size_t> &candidates,
+    BasketSet *output)
+{
+    Container items = output->get_container(k);
+
+    for (auto it = candidates.cbegin(); it != candidates.cend(); ++it) {
+        if (it->second >= support)
+            items.insert(items.end(), it->first.cbegin(), it->first.cend());
+    }
+}
+
 void apriori(
     const BasketSet &input,
     std::size_t support,
@@ -94,27 +109,6 @@ void apriori(
 
         candidate_gen(input, k - 1, prev_items, &candidates);
         count_candidates(input, &candidates);
-    //    select_candidates(input, support, k, candidates, output);
-
-        // for (auto it = first; it != last; ++it) {
-        //     const basket_t &basket{*it};
-        //     for (const basket_t &candidate : candidates) {
-        //         if (contains(candidate, basket)) {
-        //             counts[candidate]++;
-        //         }
-        //     }
-        // }
-
-        // for (auto it = counts.cbegin(); it != counts.cend(); ++it) {
-        //     if (it->second >= support) {
-        //         output.push_back(it->first);
-        //     }
-        // }
-
-        // if (prev_first == output.size())
-        //     return output; // nothing added this iteration
-
-//        std::cout << "A " << newly_added << std::endl;
-//     }
+        select_candidates(input, support, k, candidates, output);
     }
 }
