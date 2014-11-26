@@ -72,7 +72,7 @@ static inline void count_candidates(
     });
 }
 
-static inline void select_candidates(
+static inline std::size_t select_candidates(
     const BasketSet &input,
     std::size_t support,
     std::size_t k,
@@ -80,11 +80,16 @@ static inline void select_candidates(
     BasketSet *output)
 {
     Container items = output->get_container(k);
+    std::size_t count{0};
 
     for (auto it = candidates.cbegin(); it != candidates.cend(); ++it) {
-        if (it->second >= support)
+        if (it->second >= support) {
             items.insert(items.end(), it->first.cbegin(), it->first.cend());
+            count++;
+        }
     }
+
+    return count;
 }
 
 void apriori(
@@ -109,6 +114,9 @@ void apriori(
 
         candidate_gen(input, k - 1, prev_items, &candidates);
         count_candidates(input, &candidates);
-        select_candidates(input, support, k, candidates, output);
+        std::size_t count = select_candidates(input, support, k, candidates, output);
+
+        if (count == 0)
+            break;
     }
 }
