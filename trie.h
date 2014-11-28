@@ -13,7 +13,7 @@ public:
     TrieNode(item_t item) : _item{item}, _count{} { }
 
     /**
-     * Add a singleton basket to the trie; increase its count.
+     * Lookup or insert a singleton basket to the trie; increase its count.
      */
     void increment_singleton_count(item_t item)
     {
@@ -23,7 +23,9 @@ public:
     }
 
     /**
-     * Increment all combinations [begin, end) of size k.
+     * Increment all existing combinations of [begin, end) of size k.
+     *
+     * Non-existent combinations are silently dropped.
      */
     template<class InputIterator>
     void increment_combinations(
