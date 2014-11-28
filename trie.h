@@ -68,8 +68,6 @@ public:
     */
     void candidate_gen(std::size_t depth, std::size_t cur_depth=0)
     {
-      FUNCTION_TIMING;
-
         if ((cur_depth + 2) == depth) {
             for (auto it1 = _map.begin(); it1 != _map.end(); ++it1) {
                 auto it2 = it1;

@@ -14,8 +14,6 @@ static inline void count_singletons(
     std::size_t support,
     TrieNode *root)
 {
-    FUNCTION_TIMING;
-
     using Iter = Container::const_iterator;
 
     input.for_each([root](Iter i1, Iter i2) { // for each basket...
@@ -29,8 +27,6 @@ static inline void count_candidates(
     std::size_t size,
     TrieNode *root)
 {
-    FUNCTION_TIMING;
-
     using Iter = Container::const_iterator;
 
     input.for_each([size, root](Iter i1, Iter i2) { // for each basket...
@@ -49,15 +45,19 @@ void apriori(
     // Step #1: Compute frequent singletons
     ///////////////////////////////////////////////////////////////
 
+    BEGIN_TIMING("singleton")
 
     count_singletons(input, support, &root);
     root.prune_candidates(support, 1);
+
+    END_TIMING;
 
     ///////////////////////////////////////////////////////////////
     // Step 2: iteratively produce item sets of increasing length
     ///////////////////////////////////////////////////////////////
 
     for (auto k = 2; ; ++k) {
+        SCOPED_TIMING("loop");
         root.candidate_gen(k);
         count_candidates(input, k, &root);
         auto remaining = root.prune_candidates(support, k);

@@ -31,6 +31,5 @@ int main() {
     std::cout << "Read " << input.size() << " inputs." << std::endl;
 
     apriori(input, 500, &output);
-    std::cout << output << std::endl;
     std::cout << "Found " << output.size() << " items." << std::endl;
 }
