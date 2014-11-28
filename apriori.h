@@ -166,4 +166,8 @@ void apriori(
         if (count == 0)
             break;
     }
+
+    // Unpack trie results into the output data structure.
+    root.export_output(output);
+    return;
 }

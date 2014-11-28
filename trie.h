@@ -122,6 +122,13 @@ public:
         }
     }
 
+    template<class BasketType>
+    void export_output(BasketType *output) const
+    {
+        std::vector<item_t> buffer{};
+        export_recursive(&buffer, output);
+    }
+
     friend std::ostream &operator<<(std::ostream &out, const TrieNode &node);
 
 private:
@@ -140,6 +147,22 @@ private:
         if (child == nullptr)            
             child = new TrieNode{item};
         return child;
+    }
+
+    template<class BasketType>
+    void export_recursive(
+        std::vector<item_t> *buffer,
+        BasketType *output) const
+    {
+        if (buffer->size() > 0)
+            output->add_basket(*buffer);
+        for (auto &kv_pair : _map) {
+            auto item = kv_pair.first;
+            auto node = kv_pair.second;
+            buffer->push_back(item);
+            node->export_recursive(buffer, output);
+            buffer->pop_back();
+        }
     }
 
     item_t _item;
