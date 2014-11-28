@@ -23,33 +23,6 @@ public:
     }
 
     /**
-     * Increment the count of an existing Trie element; has no effect for
-     * non-existent elements.
-     */
-    template<class ForwardIterator>
-    void increment_count(ForwardIterator begin, ForwardIterator end)
-    {
-
-        if (begin == end) {
-            _count++;
-            return;
-        }
-
-        item_t first = *begin;
-        auto child = _map[first];
-        if (child == nullptr)
-            return;
-        child->increment_count(begin + 1, end);
-    }
-
-    template<class Container>
-    void increment_count(const Container &c)
-    {
-        increment_count(c.cbegin(), c.cend());
-    }
-
-
-    /**
      * Increment all combinations [begin, end) of size k.
      */
     template<class InputIterator>
