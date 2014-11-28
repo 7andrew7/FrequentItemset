@@ -32,6 +32,21 @@ static inline void count_singletons(
     }
 }
 
+static inline void count_singletons2(
+    const BasketSet &input,
+    std::size_t support,
+    TrieNode *root)
+{
+    FUNCTION_TIMING;
+
+    using Iter = Container::const_iterator;
+
+    input.for_each([root](Iter i1, Iter i2) { // for each basket...
+        for (; i1 != i2; ++i1) // for each basket member...
+            root->increment_singleton_count(*i1);
+    });
+}
+
 /**
  * Compute candidates item sets, given item sets from a previous invocation.
  */
@@ -105,7 +120,9 @@ void apriori(
     // Step #1: Compute frequent singletons
     ///////////////////////////////////////////////////////////////
 
-    count_singletons(input, support, output);
+    count_singletons(input, support, output); // AAA
+
+    count_singletons2(input, support, &root);
 
     ///////////////////////////////////////////////////////////////
     // Step 2: iteratively produce item sets of increasing length

@@ -7,6 +7,15 @@ class TrieNode {
     using MapType = std::unordered_map<item_t, TrieNode *>;
 
 public:
+
+    /**
+     * Add a singleton basket to the trie; increase its count.
+     */
+    void increment_singleton_count(item_t item)
+    {
+        auto child = lookup_or_create(item);
+        child->_count++;
+    }
     /**
      * Add an element to the Trie with zero count.
      */
@@ -58,6 +67,15 @@ public:
     }
 
 private:
+
+    TrieNode *lookup_or_create(item_t item)
+    {
+        auto child = _map[item];
+        if (child == nullptr)            
+            child = new TrieNode{};
+        return child;
+    }
+
     MapType _map{};
     std::size_t _count{};
 };
