@@ -126,6 +126,8 @@ void apriori(
 
     root.prune_candidates(support);
 
+    root.debug_print(std::cout);
+
     ///////////////////////////////////////////////////////////////
     // Step 2: iteratively produce item sets of increasing length
     ///////////////////////////////////////////////////////////////
@@ -137,6 +139,7 @@ void apriori(
         count_candidates(input, &candidates); // AAA
 
         root.candidate_gen(k);
+        root.debug_print(std::cout);
 
         Container &items = output->get_container(k);
         std::size_t count = select_candidates(input, support, candidates, &items);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <unordered_map>
 
 class TrieNode {
@@ -7,6 +8,9 @@ class TrieNode {
     using MapType = std::unordered_map<item_t, TrieNode *>;
 
 public:
+
+    TrieNode() : _item{-1}, _count{} { }
+    TrieNode(item_t item) : _item{item}, _count{} { }
 
     /**
      * Add a singleton basket to the trie; increase its count.
@@ -114,6 +118,15 @@ public:
   //      std::cout << "post-prune: " << *this << std::endl;
     }
 
+
+    void debug_print(std::ostream &out, int indent=0) const
+    {
+        std::cout << std::string(indent, ' ') << *this << std::endl;
+        for (auto &kv_pair : _map) {
+            kv_pair.second->debug_print(out, indent + 2);
+        }
+    }
+
     friend std::ostream &operator<<(std::ostream &out, const TrieNode &node);
 
 private:
@@ -122,7 +135,7 @@ private:
     {
         auto &child = _map[item];
         assert (child == nullptr);
-        child = new TrieNode{};
+        child = new TrieNode{item};
         return child;
     }
 
@@ -130,17 +143,18 @@ private:
     {
         auto &child = _map[item];
         if (child == nullptr)            
-            child = new TrieNode{};
+            child = new TrieNode{item};
         return child;
     }
 
-    MapType _map{};
-    std::size_t _count{};
+    item_t _item;
+    std::size_t _count;
+    MapType _map;
 };
 
 std::ostream &operator<<(std::ostream &out, const TrieNode &node) {
 
-    out << node._count << " [";
+    out << node._item << ": " << node._count << " [";
     for (auto kv_pair : node._map) {
         out << kv_pair.first << " ";
     }
