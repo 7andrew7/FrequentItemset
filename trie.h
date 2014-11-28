@@ -12,6 +12,11 @@ public:
     TrieNode() : _item{-1}, _count{} { }
     TrieNode(item_t item) : _item{item}, _count{} { }
 
+    ~TrieNode() {
+        for (const auto &kv : _map) {
+            delete kv.second;
+        }
+    }
     /**
      * Lookup or insert a singleton basket to the trie; increase its count.
      */
