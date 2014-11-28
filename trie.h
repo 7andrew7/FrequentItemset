@@ -68,6 +68,29 @@ public:
     }
 
     /**
+     * Generate candidates at a given depth; assumes that frequent items of
+     * size k-1 have already been computed.
+    */
+    void candidate_gen(std::size_t depth, std::size_t cur_depth=0)
+    {
+        if ((cur_depth + 2) == depth) {
+            for (auto it1 = _map.begin(); it1 != _map.end(); ++it1) {
+                auto it2 = it1;
+                for (++it2; it2 != _map.end(); ++it2) {
+                    auto min_max_pair = std::minmax(it1->first, it2->first);
+                    auto lesser_child_node = _map[min_max_pair.first];
+                    assert (lesser_child_node != nullptr);
+                    lesser_child_node->create(min_max_pair.second);
+                }
+            }
+        } else {
+             for (auto &kv_pair : _map) {
+                // TODO: early pruning of sub-trees of insufficient depth
+                kv_pair.second->candidate_gen(depth, cur_depth + 1);
+            }
+        }
+    }
+    /**
      * Remove trie nodes with insufficient support.
      */
     void prune_candidates(std::size_t support)
@@ -94,6 +117,14 @@ public:
     friend std::ostream &operator<<(std::ostream &out, const TrieNode &node);
 
 private:
+
+    TrieNode *create(item_t item)
+    {
+        auto &child = _map[item];
+        assert (child == nullptr);
+        child = new TrieNode{};
+        return child;
+    }
 
     TrieNode *lookup_or_create(item_t item)
     {

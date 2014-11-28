@@ -131,11 +131,12 @@ void apriori(
     ///////////////////////////////////////////////////////////////
 
     for (auto k = 2; ; ++k) {
-        std::map<std::vector<item_t>, std::size_t> candidates{};
-        const Container &prev_items = output->get_container(k - 1);
+        std::map<std::vector<item_t>, std::size_t> candidates{}; // AAA
+        const Container &prev_items = output->get_container(k - 1); // AAA
+        candidate_gen(input, k - 1, prev_items, &candidates); // AAA
+        count_candidates(input, &candidates); // AAA
 
-        candidate_gen(input, k - 1, prev_items, &candidates);
-        count_candidates(input, &candidates);
+        root.candidate_gen(k);
 
         Container &items = output->get_container(k);
         std::size_t count = select_candidates(input, support, candidates, &items);
