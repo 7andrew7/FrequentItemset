@@ -48,6 +48,38 @@ public:
         increment_count(c.cbegin(), c.cend());
     }
 
+
+    /**
+     * Increment all combinations [begin, end) of size k.
+     */
+    template<class InputIterator>
+    void increment_combinations(
+        InputIterator begin,
+        InputIterator end,
+        std::size_t k)
+    {
+        if (k == 0) {
+            _count++;
+            return;
+        }
+
+        if (std::distance(begin, end) < k)
+            return; // not enough items left
+
+        // TODO: early abort if a given sub-tree has insufficient depth
+
+        // consider adding the first character to the combination
+        auto it = _map.find(*begin);
+        if (it != _map.end()) {
+            auto child = it->second;
+            assert (child != nullptr);
+            child->increment_combinations(begin + 1, end, k - 1);
+        }
+
+        // skip the first element; construct combinations from the remainder
+        increment_combinations(begin + 1, end, k);
+    }
+
     /**
      * Generate candidates at a given depth; assumes that frequent items of
      * size k-1 have already been computed.

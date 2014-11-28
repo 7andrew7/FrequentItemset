@@ -57,8 +57,7 @@ static inline void count_candidates2(
     using Iter = Container::const_iterator;
 
     input.for_each([size, root](Iter i1, Iter i2) { // for each basket...
-        if (std::distance(i1, i2) < size)
-            return;
+        root->increment_combinations(i1, i2, size);
     });
 }
 
