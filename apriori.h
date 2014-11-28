@@ -5,9 +5,9 @@
 #include <map>
 #include <vector>
 
+#include "trie.h"
 #include "basket_set2.h"
 #include "timing.h"
-
 
 static inline void count_singletons(
     const BasketSet &input,
@@ -99,6 +99,7 @@ void apriori(
     std::size_t support,
     BasketSet *output)
 {
+    TrieNode root{};
 
     ///////////////////////////////////////////////////////////////
     // Step #1: Compute frequent singletons
