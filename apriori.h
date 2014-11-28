@@ -47,6 +47,21 @@ static inline void count_singletons2(
     });
 }
 
+static inline void count_candidates2(
+    const BasketSet &input,
+    std::size_t size,
+    TrieNode *root)
+{
+    FUNCTION_TIMING;
+
+    using Iter = Container::const_iterator;
+
+    input.for_each([size, root](Iter i1, Iter i2) { // for each basket...
+        if (std::distance(i1, i2) < size)
+            return;
+    });
+}
+
 /**
  * Compute candidates item sets, given item sets from a previous invocation.
  */
@@ -136,10 +151,13 @@ void apriori(
         std::map<std::vector<item_t>, std::size_t> candidates{}; // AAA
         const Container &prev_items = output->get_container(k - 1); // AAA
         candidate_gen(input, k - 1, prev_items, &candidates); // AAA
-        count_candidates(input, &candidates); // AAA
 
         root.candidate_gen(k);
         root.debug_print(std::cout);
+
+        count_candidates(input, &candidates); // AAA
+
+        count_candidates2(input, k, &root);
 
         Container &items = output->get_container(k);
         std::size_t count = select_candidates(input, support, candidates, &items);

@@ -23,7 +23,7 @@ public:
     }
 
     /**
-     * Increment the count of an existing Trie element; has not effect for
+     * Increment the count of an existing Trie element; has no effect for
      * non-existent elements.
      */
     template<class ForwardIterator>
@@ -46,7 +46,6 @@ public:
     void increment_count(const Container &c)
     {
         increment_count(c.cbegin(), c.cend());
-
     }
 
     /**
