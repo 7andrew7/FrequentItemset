@@ -79,27 +79,31 @@ public:
         }
     }
     /**
-     * Remove trie nodes with insufficient support.
+     * Remove trie nodes at the given depth with insufficient support.
      */
-    void prune_candidates(std::size_t support)
+    void prune_candidates(
+        std::size_t support,
+        std::size_t depth)
     {
-//        std::cout << "pre-prune: " << *this << std::endl;
 
-        auto it = _map.begin();
-        while (it != _map.end()) {
-            // prune from the bottom up
-            assert(it->second);
-            it->second->prune_candidates(support);
+        if (depth > 1) {
+            for (auto &kv_pair : _map)
+                kv_pair.second->prune_candidates(support, depth - 1);
+        } else {
+            // delete children with insufficient support
+            auto it = _map.begin();
+            while (it != _map.end()) {
+                assert(it->second);
 
-            if (it->second->_count < support) {
-                auto to_delete = it;
-                ++it;
-                _map.erase(to_delete);
-            } else {
-                ++it;
+                if (it->second->_count < support) {
+                    auto to_delete = it;
+                    ++it;
+                    _map.erase(to_delete);
+                } else {
+                    ++it;
+                }
             }
         }
-  //      std::cout << "post-prune: " << *this << std::endl;
     }
 
 

@@ -138,7 +138,7 @@ void apriori(
 
     count_singletons2(input, support, &root);
 
-    root.prune_candidates(support);
+    root.prune_candidates(support, 1);
 
     root.debug_print(std::cout);
 
@@ -148,9 +148,9 @@ void apriori(
 
     for (auto k = 2; ; ++k) {
         root.candidate_gen(k);
-        root.debug_print(std::cout);
         count_candidates2(input, k, &root);
-        root.prune_candidates(support);
+        root.prune_candidates(support, 2);
+        root.debug_print(std::cout);
 
         std::map<std::vector<item_t>, std::size_t> candidates{}; // AAA
         const Container &prev_items = output->get_container(k - 1); // AAA
