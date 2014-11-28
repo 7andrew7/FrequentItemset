@@ -3,6 +3,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "timing.h"
+
 class TrieNode {
     using item_t = int32_t;
     using MapType = std::unordered_map<item_t, TrieNode *>;
@@ -66,6 +68,8 @@ public:
     */
     void candidate_gen(std::size_t depth, std::size_t cur_depth=0)
     {
+      FUNCTION_TIMING;
+
         if ((cur_depth + 2) == depth) {
             for (auto it1 = _map.begin(); it1 != _map.end(); ++it1) {
                 auto it2 = it1;
