@@ -80,15 +80,19 @@ public:
     }
     /**
      * Remove trie nodes at the given depth with insufficient support.
+     *
+     * Returns the sum of candidates that were *not* pruned.
      */
-    void prune_candidates(
+    std::size_t prune_candidates(
         std::size_t support,
         std::size_t depth)
     {
 
+        std::size_t remaining{};
+
         if (depth > 1) {
             for (auto &kv_pair : _map)
-                kv_pair.second->prune_candidates(support, depth - 1);
+                remaining += kv_pair.second->prune_candidates(support, depth - 1);
         } else {
             // delete children with insufficient support
             auto it = _map.begin();
@@ -101,9 +105,12 @@ public:
                     _map.erase(to_delete);
                 } else {
                     ++it;
+                    ++remaining;
                 }
             }
         }
+
+        return remaining;
     }
 
 
