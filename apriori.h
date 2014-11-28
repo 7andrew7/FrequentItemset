@@ -124,6 +124,8 @@ void apriori(
 
     count_singletons2(input, support, &root);
 
+    root.prune_candidates(support);
+
     ///////////////////////////////////////////////////////////////
     // Step 2: iteratively produce item sets of increasing length
     ///////////////////////////////////////////////////////////////
