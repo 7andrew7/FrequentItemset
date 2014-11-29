@@ -58,7 +58,6 @@ void apriori(
 
     for (auto k = 2; ; ++k) {
         SCOPED_TIMING("loop");
-        root.candidate_gen(k);
         count_candidates(input, k, &root);
         auto remaining = root.prune_candidates(support, k);
 

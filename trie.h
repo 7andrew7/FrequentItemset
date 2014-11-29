@@ -12,11 +12,11 @@ class TrieNode {
 public:
 
     TrieNode() : TrieNode{-1} {}
-    TrieNode(item_t item) : TrieNode{item, 0} {}
-    TrieNode(item_t item, int32_t max_height) : 
+    TrieNode(item_t item) : TrieNode{item, 0, 0} {}
+    TrieNode(item_t item, int32_t max_height, std::size_t count) :
         _item{item},
         _max_height{max_height},
-        _count{} { }
+        _count{count} {}
 
     ~TrieNode() {
         for (const auto &kv : _map) {
@@ -53,48 +53,29 @@ public:
         if (dst < k)
             return; // not enough items left
 
-        if (_max_height < k)
+        if (_max_height + 1 < k)
             return; // not enough trie depth
 
         // consider adding the first character to the combination
         auto it = _map.find(*begin);
         if (it != _map.end()) {
-            auto child = it->second;
-            assert (child != nullptr);
-            child->increment_combinations(begin + 1, end, k - 1);
+            auto child_ptr = it->second;
+            assert (child_ptr != nullptr);
+            child_ptr->increment_combinations(begin + 1, end, k - 1);
+            _max_height = std::max(_max_height, child_ptr->_max_height + 1);
+        } else if (k == 1) {
+            // Generate a new leaf
+            auto child_ptr = new TrieNode{*begin, 0, 1};
+            _map.emplace(*begin, child_ptr);
+            _max_height = 1;
+        } else {
+            // don't generate new nodes for k > 1 (due to monotonicity)
         }
 
         // skip the first element; construct combinations from the remainder
         increment_combinations(begin + 1, end, k);
     }
 
-    /**
-     * Generate candidates at a given depth; assumes that frequent items of
-     * size k-1 have already been computed.
-    */
-    void candidate_gen(int32_t remaining_hops)
-    {
-        if ((_max_height + 1) < remaining_hops)
-            return;
-
-        if (remaining_hops == 2) {
-            for (auto it1 = _map.begin(); it1 != _map.end(); ++it1) {
-                auto it2 = it1;
-                for (++it2; it2 != _map.end(); ++it2) {
-                    auto min_max_pair = std::minmax(it1->first, it2->first);
-                    auto lesser_child_node = _map[min_max_pair.first];
-                    assert (lesser_child_node != nullptr);
-                    lesser_child_node->create(min_max_pair.second);
-                }
-            }
-            _max_height = 2;
-        } else {
-             for (auto &kv_pair : _map) {
-                kv_pair.second->candidate_gen(remaining_hops - 1);
-                _max_height = std::max(_max_height, kv_pair.second->_max_height + 1);
-            }
-        }
-    }
     /**
      * Remove trie nodes at the given depth with insufficient support.
      *
