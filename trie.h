@@ -31,7 +31,6 @@ public:
         auto child = lookup_or_create(item);
         assert(child);
         child->_count++;
-        _max_height = 1;
     }
 
     /**
@@ -83,10 +82,12 @@ public:
                     lesser_child_node->create(min_max_pair.second);
                 }
             }
+            _max_height = 2;
         } else {
              for (auto &kv_pair : _map) {
                 // TODO: early pruning of sub-trees of insufficient depth
                 kv_pair.second->candidate_gen(depth, cur_depth + 1);
+                _max_height = std::max(_max_height, kv_pair.second->_max_height + 1);
             }
         }
     }
@@ -150,6 +151,7 @@ private:
         auto &child = _map[item];
         assert (child == nullptr);
         child = new TrieNode{item};
+        _max_height = 1; // assumes Trie is grown breadth-first
         return child;
     }
 
@@ -158,6 +160,7 @@ private:
         auto &child = _map[item];
         if (child == nullptr)            
             child = new TrieNode{item};
+        _max_height = 1; // assumes Trie is grown breadth-first
         return child;
     }
 
