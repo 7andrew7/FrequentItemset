@@ -11,8 +11,12 @@ class TrieNode {
 
 public:
 
-    TrieNode() : _item{-1}, _count{} { }
-    TrieNode(item_t item) : _item{item}, _count{} { }
+    TrieNode() : TrieNode{-1} {}
+    TrieNode(item_t item) : TrieNode{item, 0} {}
+    TrieNode(item_t item, int32_t max_height) : 
+        _item{item},
+        _max_height{max_height},
+        _count{} { }
 
     ~TrieNode() {
         for (const auto &kv : _map) {
@@ -27,6 +31,7 @@ public:
         auto child = lookup_or_create(item);
         assert(child);
         child->_count++;
+        _max_height = 1;
     }
 
     /**
@@ -173,6 +178,7 @@ private:
     }
 
     item_t _item;
+    int32_t _max_height; // largest child height + 1
     std::size_t _count;
     MapType _map;
 };
