@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "trie.h"
-#include "basket_set2.h"
+#include "basket_set.h"
 #include "timing.h"
 
 static inline void count_candidates(

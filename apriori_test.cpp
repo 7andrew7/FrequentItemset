@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 
 #include "apriori.h"
-#include "basket_set2.h"
+#include "basket_set.h"
 
 
 TEST(sample_test_case, sample_test)
