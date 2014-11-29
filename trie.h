@@ -72,6 +72,9 @@ public:
     */
     void candidate_gen(int32_t remaining_hops)
     {
+        if ((_max_height + 1) < remaining_hops)
+            return;
+
         if (remaining_hops == 2) {
             for (auto it1 = _map.begin(); it1 != _map.end(); ++it1) {
                 auto it2 = it1;
