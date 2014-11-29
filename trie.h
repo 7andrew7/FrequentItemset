@@ -70,9 +70,9 @@ public:
      * Generate candidates at a given depth; assumes that frequent items of
      * size k-1 have already been computed.
     */
-    void candidate_gen(int32_t depth, int32_t cur_depth=0)
+    void candidate_gen(int32_t remaining_hops)
     {
-        if ((cur_depth + 2) == depth) {
+        if (remaining_hops == 2) {
             for (auto it1 = _map.begin(); it1 != _map.end(); ++it1) {
                 auto it2 = it1;
                 for (++it2; it2 != _map.end(); ++it2) {
@@ -85,8 +85,7 @@ public:
             _max_height = 2;
         } else {
              for (auto &kv_pair : _map) {
-                // TODO: early pruning of sub-trees of insufficient depth
-                kv_pair.second->candidate_gen(depth, cur_depth + 1);
+                kv_pair.second->candidate_gen(remaining_hops - 1);
                 _max_height = std::max(_max_height, kv_pair.second->_max_height + 1);
             }
         }
