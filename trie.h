@@ -70,7 +70,7 @@ public:
      * Generate candidates at a given depth; assumes that frequent items of
      * size k-1 have already been computed.
     */
-    void candidate_gen(std::size_t depth, std::size_t cur_depth=0)
+    void candidate_gen(int32_t depth, int32_t cur_depth=0)
     {
         if ((cur_depth + 2) == depth) {
             for (auto it1 = _map.begin(); it1 != _map.end(); ++it1) {
