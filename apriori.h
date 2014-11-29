@@ -9,19 +9,6 @@
 #include "basket_set2.h"
 #include "timing.h"
 
-static inline void count_singletons(
-    const BasketSet &input,
-    std::size_t support,
-    TrieNode *root)
-{
-    using Iter = Container::const_iterator;
-
-    input.for_each([root](Iter i1, Iter i2) { // for each basket...
-        for (; i1 != i2; ++i1) // for each basket member...
-            root->increment_singleton_count(*i1);
-    });
-}
-
 static inline void count_candidates(
     const BasketSet &input,
     std::size_t size,
@@ -41,22 +28,8 @@ void apriori(
 {
     TrieNode root{};
 
-    ///////////////////////////////////////////////////////////////
-    // Step #1: Compute frequent singletons
-    ///////////////////////////////////////////////////////////////
-
-    BEGIN_TIMING("singleton")
-
-    count_singletons(input, support, &root);
-    root.prune_candidates(support, 1);
-
-    END_TIMING;
-
-    ///////////////////////////////////////////////////////////////
-    // Step 2: iteratively produce item sets of increasing length
-    ///////////////////////////////////////////////////////////////
-
-    for (auto k = 2; ; ++k) {
+    for (auto k = 1; ; ++k) {
+        // Iteratively produce item sets of increasing length
         SCOPED_TIMING("loop");
         count_candidates(input, k, &root);
         auto remaining = root.prune_candidates(support, k);
