@@ -42,17 +42,19 @@ public:
     void increment_combinations(
         InputIterator begin,
         InputIterator end,
-        std::size_t k)
+        int32_t k)
     {
         if (k == 0) {
             _count++;
             return;
         }
 
-        if (std::distance(begin, end) < k)
+        auto dst = std::distance(begin, end);
+        if (dst < k)
             return; // not enough items left
 
-        // TODO: early abort if a given sub-tree has insufficient depth
+        if (_max_height < k)
+            return; // not enough trie depth
 
         // consider adding the first character to the combination
         auto it = _map.find(*begin);
