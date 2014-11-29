@@ -23,20 +23,9 @@ public:
             delete kv.second;
         }
     }
-    /**
-     * Lookup or insert a singleton basket to the trie; increase its count.
-     */
-    void increment_singleton_count(item_t item)
-    {
-        auto child = lookup_or_create(item);
-        assert(child);
-        child->_count++;
-    }
 
     /**
      * Increment all existing combinations of [begin, end) of size k.
-     *
-     * Non-existent combinations are silently dropped.
      */
     template<class InputIterator>
     void increment_combinations(
@@ -49,8 +38,7 @@ public:
             return;
         }
 
-        auto dst = std::distance(begin, end);
-        if (dst < k)
+        if (std::distance(begin, end) < k)
             return; // not enough items left
 
         if (_max_height + 1 < k)
@@ -130,24 +118,6 @@ public:
     friend std::ostream &operator<<(std::ostream &out, const TrieNode &node);
 
 private:
-
-    TrieNode *create(item_t item)
-    {
-        auto &child = _map[item];
-        assert (child == nullptr);
-        child = new TrieNode{item};
-        _max_height = 1; // assumes Trie is grown breadth-first
-        return child;
-    }
-
-    TrieNode *lookup_or_create(item_t item)
-    {
-        auto &child = _map[item];
-        if (child == nullptr)            
-            child = new TrieNode{item};
-        _max_height = 1; // assumes Trie is grown breadth-first
-        return child;
-    }
 
     template<class BasketType>
     void export_recursive(
