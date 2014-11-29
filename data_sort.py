@@ -19,7 +19,7 @@ for record in scan_file(sys.argv[1]):
 
 # Create a remapping from element to frequency index
 mappings = {}
-for idx, (elem, cnt) in enumerate(freqs.most_common()):
+for idx, (elem, cnt) in enumerate(reversed(freqs.most_common())):
     mappings[elem] = idx + 1
 
 # Sort each record based on freqency counts

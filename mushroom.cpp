@@ -6,7 +6,7 @@
 #include <vector>
 
 static void read_input(BasketSet *input) {
-    std::ifstream ifs{"../data/mushroom.dat", std::ifstream::in};
+    std::ifstream ifs{"../data/mushroom_sorted_inv.dat", std::ifstream::in};
 
     std::string line;
     while (std::getline(ifs, line)) {
