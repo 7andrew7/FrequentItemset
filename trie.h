@@ -73,18 +73,20 @@ public:
         std::size_t support,
         std::size_t depth)
     {
-
         std::size_t remaining{};
+        int32_t new_max_height{};
 
         if (depth > 1) {
-            for (auto &kv_pair : _map)
-                remaining += kv_pair.second->prune_candidates(support, depth - 1);
+            for (auto &kv_pair : _map) {
+                auto const child_ptr = kv_pair.second;
+                remaining += child_ptr->prune_candidates(support, depth - 1);
+                new_max_height = std::max(new_max_height, child_ptr->_max_height + 1);
+            }
         } else {
             // delete children with insufficient support
             auto it = _map.begin();
             while (it != _map.end()) {
                 assert(it->second);
-
                 if (it->second->_count < support) {
                     auto to_delete = it;
                     ++it;
@@ -92,10 +94,12 @@ public:
                 } else {
                     ++it;
                     ++remaining;
+                    new_max_height = 1;
                 }
             }
         }
 
+        _max_height = new_max_height;
         return remaining;
     }
 
