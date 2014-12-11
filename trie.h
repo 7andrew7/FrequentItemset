@@ -41,7 +41,8 @@ public:
             return; // not enough trie height to construct a k-combination
 
         if (k == 1) {
-            // acquire mutex
+            std::lock_guard<std::mutex> lock(_mutex);
+
             for (auto it = begin; it != end; ++it) {
                 auto map_it = _child_ptr_map.find(*it);
                 if (map_it != _child_ptr_map.end()) {
@@ -147,6 +148,7 @@ private:
     std::size_t _count;
 
     std::unordered_map<item_t, TrieNode *> _child_ptr_map;
+    std::mutex _mutex;
 };
 
 std::ostream &operator<<(std::ostream &out, const TrieNode &node) {
