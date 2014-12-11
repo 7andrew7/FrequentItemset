@@ -6,6 +6,8 @@
 
 #include "timing.h"
 
+#define THREAD_SAFE
+
 class TrieNode {
     using item_t = int32_t;
 
@@ -42,8 +44,9 @@ public:
             return; // not enough trie height to construct a k-combination
 
         if (k == 1) {
+#ifdef THREAD_SAFE
             std::lock_guard<std::mutex> lock(_mutex);
-
+#endif
             for (auto it = begin; it != end; ++it) {
                 auto map_it = _child_ptr_map.find(*it);
                 if (map_it != _child_ptr_map.end()) {
@@ -149,7 +152,10 @@ private:
     std::size_t _count;
 
     std::unordered_map<item_t, TrieNode *> _child_ptr_map;
+
+#ifdef THREAD_SAFE
     std::mutex _mutex;
+#endif
 };
 
 std::ostream &operator<<(std::ostream &out, const TrieNode &node) {
