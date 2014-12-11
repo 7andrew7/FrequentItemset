@@ -49,12 +49,10 @@ public:
             auto child_ptr = it->second;
             assert (child_ptr != nullptr);
             child_ptr->increment_combinations(begin + 1, end, k - 1);
-            _max_height = std::max(_max_height, child_ptr->_max_height + 1);
         } else if (k == 1) {
             // Generate a new leaf
             auto child_ptr = new TrieNode{*begin, 0, 1};
             _child_ptr_map.emplace(*begin, child_ptr);
-            _max_height = 1;
         } else {
             // don't generate new nodes for k > 1 (due to monotonicity)
         }
