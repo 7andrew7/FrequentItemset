@@ -32,33 +32,39 @@ public:
         InputIterator end,
         int32_t k)
     {
-        if (k == 0) {
-            _count++;
-            return;
-        }
+        assert (k > 0);
 
         if (std::distance(begin, end) < k)
-            return; // not enough items left
+            return; // not enough input items to consturct a k-combination
 
         if (_height + 1 < k)
-            return; // not enough trie height to accomodate this combination
+            return; // not enough trie height to construct a k-combination
 
-        // consider adding the first character to the combination
-        auto it = _child_ptr_map.find(*begin);
-        if (it != _child_ptr_map.end()) {
-            auto child_ptr = it->second;
-            assert (child_ptr != nullptr);
-            child_ptr->increment_combinations(begin + 1, end, k - 1);
-        } else if (k == 1) {
-            // Generate a new leaf
-            auto child_ptr = new TrieNode{*begin, 0, 1};
-            _child_ptr_map.emplace(*begin, child_ptr);
+        if (k == 1) {
+            // acquire mutex
+            for (auto it = begin; it != end; ++it) {
+                auto map_it = _child_ptr_map.find(*it);
+                if (map_it != _child_ptr_map.end()) {
+                    auto child_ptr = map_it->second;
+                    child_ptr->_count++;
+                } else {
+                    auto child_ptr = new TrieNode{*it, 0, 1};
+                    _child_ptr_map.emplace(*it, child_ptr);
+                }
+            }
         } else {
-            // don't generate new nodes for k > 1 (due to monotonicity)
-        }
+            // Include the first element; construct k-1 combinations from the remainder
+            auto it = _child_ptr_map.find(*begin);
+            if (it != _child_ptr_map.end()) {
+                auto child_ptr = it->second;
+                child_ptr->increment_combinations(begin + 1, end, k - 1);
+            } else {
+                // don't generate new nodes for k > 1 (due to monotonicity)
+            }
 
-        // skip the first element; construct combinations from the remainder
-        increment_combinations(begin + 1, end, k);
+            // skip the first element; construct k-combinations from the remainder
+            increment_combinations(begin + 1, end, k);
+        }
     }
 
     /**
