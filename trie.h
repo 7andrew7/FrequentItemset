@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <mutex>
 #include <string>
 #include <unordered_map>
@@ -7,6 +8,14 @@
 #include "timing.h"
 
 #define THREAD_SAFE
+
+// c++ 11 compatibility
+// http://herbsutter.com/gotw/_102/
+template<typename T, typename ...Args>
+std::unique_ptr<T> make_unique(Args&& ...args)
+{
+    return std::unique_ptr<T>( new T( std::forward<Args>(args)... ) );
+}
 
 class TrieNode {
     using item_t = int32_t;
@@ -19,12 +28,6 @@ public:
         _item{item},
         _height{height},
         _count{count} {}
-
-    ~TrieNode() {
-        for (const auto &kv : _child_ptr_map) {
-            delete kv.second;
-        }
-    }
 
     /**
      * Increment all existing combinations of [begin, end) of size k.
@@ -50,18 +53,18 @@ public:
             for (auto it = begin; it != end; ++it) {
                 auto map_it = _child_ptr_map.find(*it);
                 if (map_it != _child_ptr_map.end()) {
-                    auto child_ptr = map_it->second;
+                    auto child_ptr = map_it->second.get();
                     child_ptr->_count++;
                 } else {
-                    auto child_ptr = new TrieNode{*it, 0, 1};
-                    _child_ptr_map.emplace(*it, child_ptr);
+                    auto child = make_unique<TrieNode>(*it, 0, 1);
+                    _child_ptr_map.emplace(*it, std::move(child));
                 }
             }
         } else {
             // Include the first element; construct k-1 combinations from the remainder
             auto it = _child_ptr_map.find(*begin);
             if (it != _child_ptr_map.end()) {
-                auto child_ptr = it->second;
+                auto child_ptr = it->second.get();
                 child_ptr->increment_combinations(begin + 1, end, k - 1);
             } else {
                 // don't generate new nodes for k > 1 (due to monotonicity)
@@ -86,7 +89,7 @@ public:
 
         if (depth > 1) {
             for (auto &kv_pair : _child_ptr_map) {
-                auto const child_ptr = kv_pair.second;
+                auto const child_ptr = kv_pair.second.get();
                 remaining += child_ptr->prune_candidates(support, depth - 1);
                 new_height = std::max(new_height, child_ptr->_height + 1);
             }
@@ -140,7 +143,7 @@ private:
             output->add_basket(*buffer);
         for (auto &kv_pair : _child_ptr_map) {
             auto item = kv_pair.first;
-            auto node = kv_pair.second;
+            auto node = kv_pair.second.get();
             buffer->push_back(item);
             node->export_recursive(buffer, output);
             buffer->pop_back();
@@ -151,7 +154,7 @@ private:
     int32_t _height; // Length of a longest path to a leaf
     std::size_t _count;
 
-    std::unordered_map<item_t, TrieNode *> _child_ptr_map;
+    std::unordered_map<item_t, std::unique_ptr<TrieNode>> _child_ptr_map;
 
 #ifdef THREAD_SAFE
     std::mutex _mutex;
@@ -161,7 +164,7 @@ private:
 std::ostream &operator<<(std::ostream &out, const TrieNode &node) {
 
     out << node._item << ": " << node._count << " [";
-    for (auto kv_pair : node._child_ptr_map) {
+    for (const auto &kv_pair : node._child_ptr_map) {
         out << kv_pair.first << " ";
     }
     out << "]";
