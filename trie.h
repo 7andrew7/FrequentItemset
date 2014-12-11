@@ -12,9 +12,9 @@ public:
 
     TrieNode() : TrieNode{-1} {}
     TrieNode(item_t item) : TrieNode{item, 0, 0} {}
-    TrieNode(item_t item, int32_t max_height, std::size_t count) :
+    TrieNode(item_t item, int32_t height, std::size_t count) :
         _item{item},
-        _max_height{max_height},
+        _height{height},
         _count{count} {}
 
     ~TrieNode() {
@@ -40,8 +40,8 @@ public:
         if (std::distance(begin, end) < k)
             return; // not enough items left
 
-        if (_max_height + 1 < k)
-            return; // not enough trie depth
+        if (_height + 1 < k)
+            return; // not enough trie height to accomodate this combination
 
         // consider adding the first character to the combination
         auto it = _child_ptr_map.find(*begin);
@@ -71,13 +71,13 @@ public:
         std::size_t depth)
     {
         std::size_t remaining{};
-        int32_t new_max_height{};
+        int32_t new_height{};
 
         if (depth > 1) {
             for (auto &kv_pair : _child_ptr_map) {
                 auto const child_ptr = kv_pair.second;
                 remaining += child_ptr->prune_candidates(support, depth - 1);
-                new_max_height = std::max(new_max_height, child_ptr->_max_height + 1);
+                new_height = std::max(new_height, child_ptr->_height + 1);
             }
         } else {
             // delete children with insufficient support
@@ -91,12 +91,12 @@ public:
                 } else {
                     ++it;
                     ++remaining;
-                    new_max_height = 1;
+                    new_height = 1;
                 }
             }
         }
 
-        _max_height = new_max_height;
+        _height = new_height;
         return remaining;
     }
 
@@ -137,7 +137,7 @@ private:
     }
 
     item_t _item;
-    int32_t _max_height; // largest child height + 1
+    int32_t _height; // Length of a longest path to a leaf
     std::size_t _count;
 
     std::unordered_map<item_t, TrieNode *> _child_ptr_map;
