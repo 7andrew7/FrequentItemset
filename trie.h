@@ -7,7 +7,6 @@
 
 class TrieNode {
     using item_t = int32_t;
-    using MapType = std::unordered_map<item_t, TrieNode *>;
 
 public:
 
@@ -19,7 +18,7 @@ public:
         _count{count} {}
 
     ~TrieNode() {
-        for (const auto &kv : _map) {
+        for (const auto &kv : _child_ptr_map) {
             delete kv.second;
         }
     }
@@ -45,8 +44,8 @@ public:
             return; // not enough trie depth
 
         // consider adding the first character to the combination
-        auto it = _map.find(*begin);
-        if (it != _map.end()) {
+        auto it = _child_ptr_map.find(*begin);
+        if (it != _child_ptr_map.end()) {
             auto child_ptr = it->second;
             assert (child_ptr != nullptr);
             child_ptr->increment_combinations(begin + 1, end, k - 1);
@@ -54,7 +53,7 @@ public:
         } else if (k == 1) {
             // Generate a new leaf
             auto child_ptr = new TrieNode{*begin, 0, 1};
-            _map.emplace(*begin, child_ptr);
+            _child_ptr_map.emplace(*begin, child_ptr);
             _max_height = 1;
         } else {
             // don't generate new nodes for k > 1 (due to monotonicity)
@@ -77,20 +76,20 @@ public:
         int32_t new_max_height{};
 
         if (depth > 1) {
-            for (auto &kv_pair : _map) {
+            for (auto &kv_pair : _child_ptr_map) {
                 auto const child_ptr = kv_pair.second;
                 remaining += child_ptr->prune_candidates(support, depth - 1);
                 new_max_height = std::max(new_max_height, child_ptr->_max_height + 1);
             }
         } else {
             // delete children with insufficient support
-            auto it = _map.begin();
-            while (it != _map.end()) {
+            auto it = _child_ptr_map.begin();
+            while (it != _child_ptr_map.end()) {
                 assert(it->second);
                 if (it->second->_count < support) {
                     auto to_delete = it;
                     ++it;
-                    _map.erase(to_delete);
+                    _child_ptr_map.erase(to_delete);
                 } else {
                     ++it;
                     ++remaining;
@@ -107,7 +106,7 @@ public:
     void debug_print(std::ostream &out, int indent=0) const
     {
         std::cout << std::string(indent, ' ') << *this << std::endl;
-        for (auto &kv_pair : _map) {
+        for (auto &kv_pair : _child_ptr_map) {
             kv_pair.second->debug_print(out, indent + 2);
         }
     }
@@ -130,7 +129,7 @@ private:
     {
         if (buffer->size() > 0)
             output->add_basket(*buffer);
-        for (auto &kv_pair : _map) {
+        for (auto &kv_pair : _child_ptr_map) {
             auto item = kv_pair.first;
             auto node = kv_pair.second;
             buffer->push_back(item);
@@ -142,13 +141,14 @@ private:
     item_t _item;
     int32_t _max_height; // largest child height + 1
     std::size_t _count;
-    MapType _map;
+
+    std::unordered_map<item_t, TrieNode *> _child_ptr_map;
 };
 
 std::ostream &operator<<(std::ostream &out, const TrieNode &node) {
 
     out << node._item << ": " << node._count << " [";
-    for (auto kv_pair : node._map) {
+    for (auto kv_pair : node._child_ptr_map) {
         out << kv_pair.first << " ";
     }
     out << "]";
